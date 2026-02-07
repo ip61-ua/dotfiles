@@ -3,3 +3,4 @@
 !.emacs.d/
 .emacs.d/*
 !.emacs.d/init.el
+!fix_bluetooth.sh
