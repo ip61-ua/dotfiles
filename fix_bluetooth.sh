@@ -1,17 +1,17 @@
 TIEMPO_ESPERA=1
 
 if [ "$(id -u)" -ne 0 ]; then
-  echo "El programa requiere permisos de elevación."
+  echo "This program requires to be executed as superuser."
   pkexec sudo -p bash $(realpath $0)
   exit 0
 fi
 
 while true; do
 
-  echo " >>> Intento #$TIEMPO_ESPERA. <<< "
+  echo " >>> Attempt #$TIEMPO_ESPERA. <<< "
 
   if bluetoothctl list | grep -q "Controller"; then
-    echo "Controlador detectado."
+    echo "Controller detected."
     break
   fi
 
@@ -43,5 +43,5 @@ while true; do
   TIEMPO_ESPERA=$((TIEMPO_ESPERA+1))
 done
 
-echo "Hecho."
+echo "Done."
 exit 0
