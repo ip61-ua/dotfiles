@@ -55,7 +55,7 @@
 		    "--clang-tidy"
 		    "--header-insertion=iwyu"
 		    "--completion-style=detailed"
-		    "--function-arg-placeholders")))
+		    "--function-arg-placeholders=0")))
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (derived-mode-p 'c++-mode 'c-mode)
