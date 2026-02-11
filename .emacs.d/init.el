@@ -32,6 +32,8 @@
 (global-display-line-numbers-mode)
 (desktop-save-mode 1)
 (windmove-default-keybindings)
+(setq compilation-scroll-output t)
+(setq gdb-many-windows t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (use-package corfu
@@ -47,6 +49,7 @@
   :hook ((c-mode c++-mode) . eglot-ensure)
   :bind ("C-c r" . eglot-rename)
   :config
+  ;; c/c++
   (add-to-list 'eglot-server-programs
 	       '((c++-mode c-mode)
 		 . ("clangd"
@@ -56,6 +59,16 @@
 		    "--completion-style=detailed"
 		    "--function-arg-placeholders=0"
 		    "--fallback-style=GNU")))
+
+  ;; php
+  (add-to-list 'eglot-server-programs
+               '((php-mode) . ("intelephense" "--stdio")))
+
+  ;; css
+  (add-to-list 'eglot-server-programs
+               '((css-mode) . ("vscode-css-language-server" "--stdio")))
+  
+  ;; format on save for c/c++
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (derived-mode-p 'c++-mode 'c-mode)
@@ -67,18 +80,60 @@
   :init
   (global-eldoc-mode))
 
+;; php
+(use-package php-mode
+  :mode "\\.php\\'"
+  :config
+  (setq php-mode-coding-style 'psr2))
+
+;; css
+(use-package css-mode
+  :ensure nil
+  :config
+  (setq css-indent-offset 2))
+
+;; web
+(use-package web-mode
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.blade\\.php\\'" . web-mode)
+         ("\\.js\\'" . web-mode))
+  :config
+  ;; blade php
+  (setq web-mode-engines-alist '(("blade" . "\\.blade\\.php\\'")))
+  
+  ;; css, html
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-enable-css-colorization t))
+
+;; emmet
+(use-package emmet-mode
+  :hook (web-mode css-mode sgml-mode)
+  :config
+  (setq emmet-indentation 2))
+
+
 (use-package yasnippet
   :config
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets)
 
-(setq compilation-scroll-output t)
-(setq gdb-many-windows t)
-
+;; keys
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 
+;; artisan php
+(defun artisan (cmd)
+  "Run artisan on root directory."
+  (interactive "sArtisan command: ")
+  (let ((default-directory (project-root (project-current t))))
+    (async-shell-command (concat "php artisan " cmd))))
+(global-set-key (kbd "C-c a") 'artisan)
+
+;; Wayland & system clipboard
 (setq select-enable-clipboard t)
 (setq select-enable-primary t)
 
@@ -93,3 +148,4 @@
 	      (lambda ()
 		(shell-command-to-string "wl-paste -n | tr -d \r"))))
     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
+
