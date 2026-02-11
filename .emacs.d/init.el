@@ -32,7 +32,6 @@
 (global-display-line-numbers-mode)
 (desktop-save-mode 1)
 (windmove-default-keybindings)
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (use-package corfu
@@ -76,5 +75,21 @@
 
 (setq compilation-scroll-output t)
 (setq gdb-many-windows t)
+
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
+
+(setq select-enable-clipboard t)
+(setq select-enable-primary t)
+
+(cond
+ ((getenv "WAYLAND_DISPLAY")
+  (if (executable-find "wl-copy")
+      (progn
+	(setq interprogram-cut-function
+	      (lambda (text)
+		(start-process "wl-copy" nil "wl-copy" text)))
+	(setq interprogram-paste-function
+	      (lambda ()
+		(shell-command-to-string "wl-paste -n | tr -d \r"))))
+    (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
