@@ -76,3 +76,4 @@
 (setq compilation-scroll-output t)
 (setq gdb-many-windows t)
 (global-set-key (kbd "<f5>") 'recompile)
+(global-set-key (kbd "C-c SPC") 'completion-at-point)
