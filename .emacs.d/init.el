@@ -125,14 +125,6 @@
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 
-;; artisan php
-(defun artisan (cmd)
-  "Run artisan on root directory."
-  (interactive "sArtisan command: ")
-  (let ((default-directory (project-root (project-current t))))
-    (async-shell-command (concat "php artisan " cmd))))
-(global-set-key (kbd "C-c a") 'artisan)
-
 ;; Wayland & system clipboard
 (setq select-enable-clipboard t)
 (setq select-enable-primary t)
