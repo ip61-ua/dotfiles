@@ -45,12 +45,13 @@
   :init
   (global-corfu-mode))
 
+;; multicursors
 (use-package multiple-cursors
   :ensure t
-  :bind (("C->" . mc/mark-next-like-this)
-	 ("C-<" . mc/mark-previous-like-this)
-	 ("C-c C-<" . mc/mark-all-like-this)
-	 ("C-c m l" . mc/edit-lines)))
+  :bind (("C-n" . mc/mark-next-like-this)
+	 ("C-p" . mc/mark-previous-like-this)
+	 ("C-c a" . mc/mark-all-like-this)
+	 ("C-c l" . mc/edit-lines)))
 
 (use-package eglot
   :hook ((c-mode c++-mode) . eglot-ensure)
@@ -129,6 +130,7 @@
 (use-package yasnippet-snippets)
 
 ;; keys
+(global-set-key (kbd "C-c s") 'shell)
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 
