@@ -144,9 +144,11 @@
       (progn
 	(setq interprogram-cut-function
 	      (lambda (text)
-		(start-process "wl-copy" nil "wl-copy" text)))
+		(unless (bound-and-true-p multiple-cursors-mode)
+		 (start-process "wl-copy" nil "wl-copy" text))))
 	(setq interprogram-paste-function
 	      (lambda ()
-		(shell-command-to-string "wl-paste -n | tr -d \r"))))
+		(unless (bound-and-true-p multiple-cursors-mode)
+		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
 
