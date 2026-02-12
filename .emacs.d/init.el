@@ -45,6 +45,13 @@
   :init
   (global-corfu-mode))
 
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C->" . mc/mark-next-like-this)
+	 ("C-<" . mc/mark-previous-like-this)
+	 ("C-c C-<" . mc/mark-all-like-this)
+	 ("C-c m l" . mc/edit-lines)))
+
 (use-package eglot
   :hook ((c-mode c++-mode) . eglot-ensure)
   :bind ("C-c r" . eglot-rename)
