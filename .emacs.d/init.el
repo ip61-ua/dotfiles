@@ -82,6 +82,15 @@
 	      (when (derived-mode-p 'c++-mode 'c-mode)
 		(eglot-format-buffer)))))
 
+;; company
+(use-package company
+  :ensure t
+  :init
+  (global-company-mode)
+  :config
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 1))
+
 (setq-default c-basic-offset 4)
 
 (use-package eldoc
