@@ -12,7 +12,10 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "arial" "fixed")))
- '(package-selected-packages nil))
+ '(package-selected-packages '(overleaf))
+ '(package-vc-selected-packages
+   '((overleaf :vc-backend Git :url
+	       "https://github.com/vale981/overleaf.el"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -161,3 +164,13 @@
 		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
 
+
+;; overleaf UA
+(unless (package-installed-p 'overleaf)
+  (package-vc-install "https://github.com/vale981/overleaf.el"))
+
+(use-package overleaf
+  :ensure t
+  :config
+  (setq overleaf-base-url "https://leaf.iuii.ua.es")
+  (setq overleaf-directory "~/.Overleaf"))
