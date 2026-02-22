@@ -10,7 +10,7 @@
       "Courier Std" "FreeMono" "Nimbus Mono L" "courier" "fixed")
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
-     ("helv" "helvetica" "arial" "fixed")))
+     ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(display-line-numbers-type 'relative)
  '(package-selected-packages
    '(activities auctex company corfu emmet-mode html5-schema js2-mode
@@ -20,8 +20,7 @@
 
 (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd"))
 
-(ido-mode 1)
-(ido-everywhere 1)
+(fido-mode 1)
 (column-number-mode)
 (global-display-line-numbers-mode)
 (desktop-save-mode 1)
@@ -42,9 +41,12 @@
 ;; multicursors
 (use-package multiple-cursors
   :ensure t
-  :bind (("C-n" . mc/mark-next-like-this)
-	 ("C-p" . mc/mark-previous-like-this)
+  :bind (
+	 ("C->"   . mc/mark-next-like-this)
+	 ("C-<"   . mc/mark-previous-like-this)
 	 ("C-c a" . mc/mark-all-like-this)
+	 ("C-."   . mc/skip-to-next-like-this)
+	 ("C-,"   . mc/skip-to-previous-like-this)
 	 ("C-c l" . mc/edit-lines)))
 
 (use-package eglot
@@ -135,7 +137,8 @@
 (global-set-key (kbd "C-c s") 'shell)
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
- 
+(global-set-key (kbd "C-m") 'duplicate-line)
+
 ;; Wayland & system clipboard
 (setq select-enable-clipboard t)
 (setq select-enable-primary t)
