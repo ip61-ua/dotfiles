@@ -5,20 +5,23 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(leuven-dark))
+ '(custom-safe-themes
+   '("d80952c58cf1b06d936b1392c38230b74ae1a2a6729594770762dc0779ac66b7"
+     default))
+ '(display-line-numbers-type 'relative)
  '(face-font-family-alternatives
-   '(("Monospace Serif" "Courier 10 Pitch" "Consolas"
-      "Courier Std" "FreeMono" "Nimbus Mono L" "courier" "fixed")
+   '(("Monospace Serif" "Courier 10 Pitch" "Consolas" "Courier Std"
+      "FreeMono" "Nimbus Mono L" "courier" "fixed")
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(display-line-numbers-type 'relative)
  '(package-selected-packages
-   '(activities auctex company corfu emmet-mode html5-schema js2-mode
-		magit multiple-cursors pdf-tools php-mode plz posframe
-		rainbow-mode web-mode webdriver websocket
-		yasnippet-snippets)))
+   '(activities auctex company corfu emmet-mode gruvbox-theme
+		html5-schema js2-mode magit multiple-cursors pdf-tools
+		php-mode plz posframe rainbow-mode web-mode webdriver
+		websocket yasnippet-snippets)))
 
-(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
 
 (fido-mode 1)
 (column-number-mode)
@@ -29,6 +32,7 @@
 (setq gdb-many-windows t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+
 (use-package corfu
   :ensure t
   :custom
@@ -37,6 +41,12 @@
   (corfu-cycle t)
   :init
   (global-corfu-mode))
+
+;; Custom theme
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox-dark-hard t))
 
 ;; multicursors
 (use-package multiple-cursors
@@ -137,7 +147,7 @@
 (global-set-key (kbd "C-c s") 'shell)
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
-(global-set-key (kbd "C-m") 'duplicate-line)
+(global-set-key (kbd "C-j") 'duplicate-line)
 
 ;; Wayland & system clipboard
 (setq select-enable-clipboard t)
@@ -156,3 +166,9 @@
 		(unless (bound-and-true-p multiple-cursors-mode)
 		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
