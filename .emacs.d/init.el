@@ -1,4 +1,12 @@
 ;;; -*- lexical-binding: t -*-
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -18,8 +26,16 @@
  '(package-selected-packages
    '(activities auctex company corfu emmet-mode gruvbox-theme
 		html5-schema js2-mode magit multiple-cursors pdf-tools
-		php-mode plz posframe rainbow-mode web-mode webdriver
-		websocket yasnippet-snippets)))
+		php-mode plz posframe pyvenv rainbow-mode vertico
+		web-mode webdriver websocket yasnippet-snippets)))
+
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
 
@@ -32,6 +48,10 @@
 (setq gdb-many-windows t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; (use-package vertico
+;;   :ensure t
+;;   :init
+;;   (vertico-mode))
 
 (use-package corfu
   :ensure t
@@ -39,8 +59,24 @@
   (corfu-auto t)
   (corfu-quit-no-match 'separator)
   (corfu-cycle t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.1)
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
+  :config
+  (setq tab-always-indent 'complete)
+  (setq completion-show-inline-help nil)
+  (add-to-list 'display-buffer-alist
+               '("\\*Completions\\*"
+                 (display-buffer-no-window)
+                 (allow-no-window . t))))
+  
+(use-package corfu-popupinfo
+  :ensure nil
+  :after corfu
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay 0.5))
 
 ;; Custom theme
 (use-package gruvbox-theme
@@ -59,8 +95,22 @@
 	 ("C-,"   . mc/skip-to-previous-like-this)
 	 ("C-c l" . mc/edit-lines)))
 
+;; Python
+(use-package pyvenv
+  :ensure t
+  :config
+  (setq pyvenv-mode-line-indicator '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+  (pyvenv-mode 1))
+
+(use-package python
+  :ensure nil
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python3" . python-mode)
+  :config
+  (setq python-shell-interpreter "python3"))
+
 (use-package eglot
-  :hook ((c-mode c++-mode) . eglot-ensure)
+  :hook ((c-mode c++-mode python-mode) . eglot-ensure)
   :bind ("C-c r" . eglot-rename)
   :config
   ;; c/c++
@@ -74,6 +124,10 @@
 		    "--function-arg-placeholders=0"
 		    "--fallback-style=GNU")))
 
+  ;; python 
+  (add-to-list 'eglot-server-programs
+               '((python-mode) . ("pyright-langserver" "--stdio")))
+  
   ;; php
   (add-to-list 'eglot-server-programs
                '((php-mode) . ("intelephense" "--stdio")))
@@ -82,26 +136,33 @@
   (add-to-list 'eglot-server-programs
                '((css-mode) . ("vscode-css-language-server" "--stdio")))
   
-  ;; format on save for c/c++
+  ;; Format on save for c/c++
   (add-hook 'before-save-hook
 	    (lambda ()
-	      (when (derived-mode-p 'c++-mode 'c-mode)
+	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode)
 		(eglot-format-buffer)))))
 
 ;; company
-(use-package company
-  :ensure t
-  :init
-  (global-company-mode)
-  :config
-  (setq company-idle-delay 0.1)
-  (setq company-minimum-prefix-length 1))
+;; (use-package company
+;;   :ensure t
+;;   :init
+;;   (global-company-mode)
+;;   :config
+;;   (setq company-idle-delay 0.1)
+;;   (setq company-minimum-prefix-length 2)
+;;   (setq company-show-numbers t)
+;;   (setq company-dabbrev-downcase nil)
+;;   (setq company-dabbrev-ignore-case nil)
+;;   (setq company-dabbrev-code-ignore-case nil))
 
 (setq-default c-basic-offset 4)
 
 (use-package eldoc
   :init
-  (global-eldoc-mode))
+  (global-eldoc-mode)
+  :config
+  (setq eldoc-echo-area-use-multiline-p nil) 
+  (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
 
 ;; php
 (use-package php-mode
@@ -166,9 +227,3 @@
 		(unless (bound-and-true-p multiple-cursors-mode)
 		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
