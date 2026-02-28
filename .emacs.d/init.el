@@ -24,7 +24,7 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(activities auctex company corfu emmet-mode gruvbox-theme
+   '(activities auctex company corfu docker emmet-mode gruvbox-theme
 		html5-schema js2-mode magit multiple-cursors pdf-tools
 		php-mode plz posframe pyvenv rainbow-mode vertico
 		web-mode webdriver websocket yasnippet-snippets)))
@@ -110,7 +110,7 @@
   (setq python-shell-interpreter "python3"))
 
 (use-package eglot
-  :hook ((c-mode c++-mode python-mode) . eglot-ensure)
+  :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode) . eglot-ensure)
   :bind ("C-c r" . eglot-rename)
   :config
   ;; c/c++
@@ -135,11 +135,17 @@
   ;; css
   (add-to-list 'eglot-server-programs
                '((css-mode) . ("vscode-css-language-server" "--stdio")))
+
+  (add-to-list 'eglot-server-programs
+               '((dockerfile-mode) . ("docker-langserver" "--stdio")))
+
+  (add-to-list 'eglot-server-programs
+               '((yaml-mode) . ("yaml-language-server" "--stdio")))
   
   ;; Format on save for c/c++
   (add-hook 'before-save-hook
 	    (lambda ()
-	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode)
+	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode 'dockerfile-mode 'yaml-mode)
 		(eglot-format-buffer)))))
 
 ;; company
@@ -154,6 +160,22 @@
 ;;   (setq company-dabbrev-downcase nil)
 ;;   (setq company-dabbrev-ignore-case nil)
 ;;   (setq company-dabbrev-code-ignore-case nil))
+
+;; yml
+(use-package yaml-mode
+  :ensure t
+  :mode ("\\.ya?ml\\'" . yaml-mode))
+
+;; docker
+(use-package dockerfile-mode
+  :ensure t
+  :mode ("Dockerfile\\'" . dockerfile-mode))
+
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker)
+  :config
+  (use-package docker-tramp :ensure t))
 
 (setq-default c-basic-offset 4)
 
