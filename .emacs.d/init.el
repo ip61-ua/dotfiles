@@ -40,6 +40,7 @@
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
 
 (fido-mode 1)
+(scroll-bar-mode -1)
 (column-number-mode)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
