@@ -24,11 +24,11 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(activities auctex company corfu docker docker
-		dockerfile-mode emmet-mode gruvbox-theme html5-schema
+   '(activities auctex company corfu docker docker dockerfile-mode
+		dotenv-mode emmet-mode gruvbox-theme html5-schema
 		js2-mode magit multiple-cursors pdf-tools php-mode plz
 		posframe pyvenv rainbow-mode web-mode webdriver
-		websocket)))
+		websocket yaml-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -82,13 +82,31 @@
   :custom
   (corfu-popupinfo-delay 0.5))
 
+;; yaml
+(use-package yaml-mode
+  :ensure t
+  :mode ("\\.ya?ml\\'" . yaml-mode))
+
+;; .env
+(use-package dotenv-mode
+  :ensure t
+  :mode ("\\.env\\..*\\'" . dotenv-mode)
+  :mode ("\\.env\\'" . dotenv-mode))
+
 ;; temporal files
-(setq backup-directory-alist
-      `(("." . ,(expand-file-name "backups/" user-emacs-directory))))
+(defvar my-backup-dir (expand-file-name "backups/" user-emacs-directory))
+(defvar my-auto-save-dir (expand-file-name "auto-saves/" user-emacs-directory))
 
-(setq auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "auto-saves/" user-emacs-directory) t)))
+(unless (file-exists-p my-backup-dir)
+  (make-directory my-backup-dir t))
 
+(unless (file-exists-p my-auto-save-dir)
+  (make-directory my-auto-save-dir t))
+
+(setq backup-directory-alist `(("." . ,my-backup-dir)))
+(setq auto-save-file-name-transforms `((".*" ,my-auto-save-dir t)))
+
+(setq create-lockfiles nil)
 (setq backup-by-copying t)
 (setq delete-old-versions t)
 (setq kept-new-versions 6)
