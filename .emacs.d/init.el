@@ -25,10 +25,10 @@
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
    '(activities auctex company corfu docker docker dockerfile-mode
-		dotenv-mode emmet-mode gruvbox-theme html5-schema
-		js2-mode magit multiple-cursors pdf-tools php-mode plz
-		posframe pyvenv rainbow-mode web-mode webdriver
-		websocket yaml-mode)))
+		dotenv-mode emmet-mode golden-ratio gruvbox-theme
+		html5-schema js2-mode magit multiple-cursors pdf-tools
+		php-mode plz posframe pyvenv rainbow-mode web-mode
+		webdriver websocket yaml-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -37,7 +37,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 9"))
 
 (fido-mode 1)
 (scroll-bar-mode -1)
@@ -81,6 +81,22 @@
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-popupinfo-delay 0.5))
+
+;; golden-ratio
+(use-package golden-ratio
+  :ensure t
+  :init
+  (golden-ratio-mode 1)
+  :config
+  (add-to-list 'golden-ratio-extra-commands 'windmove-left)
+  (add-to-list 'golden-ratio-extra-commands 'windmove-right)
+  (add-to-list 'golden-ratio-extra-commands 'windmove-up)
+  (add-to-list 'golden-ratio-extra-commands 'windmove-down)
+  (setq golden-ratio-exclude-modes
+        '(ediff-mode
+          "calendar-mode"
+          "calc-mode"
+          "dired-mode")))
 
 ;; yaml
 (use-package yaml-mode
