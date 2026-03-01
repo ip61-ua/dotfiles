@@ -24,10 +24,11 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(activities auctex company corfu docker emmet-mode gruvbox-theme
-		html5-schema js2-mode magit multiple-cursors pdf-tools
-		php-mode plz posframe pyvenv rainbow-mode
-		web-mode webdriver websocket docker dockerfile-mode)))
+   '(activities auctex company corfu docker docker
+		dockerfile-mode emmet-mode gruvbox-theme html5-schema
+		js2-mode magit multiple-cursors pdf-tools php-mode plz
+		posframe pyvenv rainbow-mode web-mode webdriver
+		websocket)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -126,9 +127,7 @@
 
 (use-package docker
   :ensure t
-  :bind ("C-c d" . docker)
-  :config
-  (use-package docker-tramp :ensure t))
+  :bind ("C-c d" . docker))
 
 (use-package eglot
   :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode) . eglot-ensure)
