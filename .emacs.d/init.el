@@ -40,18 +40,21 @@
 
 (fido-mode 1)
 (column-number-mode)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
 (global-display-line-numbers-mode)
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 (windmove-default-keybindings)
 (setq compilation-scroll-output t)
 (setq gdb-many-windows t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; (use-package vertico
-;;   :ensure t
-;;   :init
-;;   (vertico-mode))
+;;    :ensure t
+;;    :init
+;;    (vertico-mode))
 
+;; completion
 (use-package corfu
   :ensure t
   :custom
@@ -76,6 +79,19 @@
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-popupinfo-delay 0.5))
+
+;; temporal files
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name "backups/" user-emacs-directory))))
+
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "auto-saves/" user-emacs-directory) t)))
+
+(setq backup-by-copying t)
+(setq delete-old-versions t)
+(setq kept-new-versions 6)
+(setq kept-old-versions 2)
+(setq version-control t)
 
 ;; Custom theme
 (use-package gruvbox-theme
