@@ -24,11 +24,12 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(activities auctex company corfu docker docker dockerfile-mode
+   '(activities auctex company corfu docker dockerfile-mode
 		dotenv-mode emmet-mode golden-ratio gruvbox-theme
-		html5-schema js2-mode magit multiple-cursors pdf-tools
-		php-mode plz posframe pyvenv rainbow-mode web-mode
-		webdriver websocket yaml-mode)))
+		html5-schema js2-mode magit markdown-mode
+		multiple-cursors pdf-tools php-mode plz posframe
+		pyvenv rainbow-mode web-mode webdriver websocket
+		yaml-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -102,6 +103,17 @@
 (use-package yaml-mode
   :ensure t
   :mode ("\\.ya?ml\\'" . yaml-mode))
+
+;; markdown
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init
+  (setq markdown-command "markdown")
+  :config
+  (setq markdown-fontify-code-blocks-natively t)
+  (setq markdown-header-scaling t)
+  (add-hook 'markdown-mode-hook 'visual-line-mode))
 
 ;; .env
 (use-package dotenv-mode
