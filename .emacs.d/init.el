@@ -56,6 +56,21 @@
   :ensure t
   :bind ("C-x g" . magit-status))
 
+;; noob thing to get now and today
+; Source - https://stackoverflow.com/a/619525
+; Posted by Michael Paulukonis
+; Retrieved 2026-03-08, License - CC BY-SA 2.5
+(defun now ()
+  "Insert string for the current time formatted like '2:34 PM'."
+  (interactive)
+  (insert (format-time-string "%D %H:%M")))
+
+(defun today ()
+  "Insert string for today's date nicely formatted in American style,
+e.g. Sunday, September 17, 2000."
+  (interactive)
+  (format-time-string "%A, %B %e, %Y"))
+
 ;; icons
 (use-package nerd-icons
   :ensure t
@@ -82,7 +97,10 @@
 			  (agenda    . 4)
 			  (registers . 4)))
   
-  (setq dashboard-banner-logo-title "Добро пожаловать!")
+  (setq dashboard-banner-logo-title
+	(string-join
+	 (list "Добро пожаловать! Сегодня "
+	       (format-time-string "%A, %B %e."))))
   ; (setq dashboard-startup-banner 'official)
   (setq dashboard-startup-banner 'official)
   (setq dashboard-center-content t)
