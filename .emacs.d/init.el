@@ -23,13 +23,7 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages
-   '(activities auctex company corfu docker dockerfile-mode
-		dotenv-mode emmet-mode golden-ratio gruvbox-theme
-		html5-schema js2-mode magit markdown-mode
-		multiple-cursors pdf-tools php-mode plz posframe
-		pyvenv rainbow-mode web-mode webdriver websocket
-		yaml-mode)))
+ '(package-selected-packages nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -56,6 +50,45 @@
 ;;    :ensure t
 ;;    :init
 ;;    (vertico-mode))
+
+;; icons
+(use-package nerd-icons
+  :ensure t
+  :config
+  (unless (member "Symbols Nerd Font Mono" (font-family-list))
+    (nerd-icons-install-fonts t)))
+
+;; Startup screen
+
+
+(use-package dashboard
+  :ensure t
+
+  :init
+  (require 'ansi-color)
+  (setq dashboard-display-icons-p t)     
+  (setq dashboard-icon-type 'nerd-icons)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-items '((recents   . 4)
+                          (projects  . 4)
+                          (bookmarks . 4)
+			  (agenda    . 4)
+			  (registers . 4)))
+  
+  (setq dashboard-banner-logo-title "Добро пожаловать!")
+  ; (setq dashboard-startup-banner 'official)
+  (setq dashboard-startup-banner 'official)
+  (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-footer nil))
+
+(setq inhibit-startup-screen t)
 
 ;; completion
 (use-package corfu
