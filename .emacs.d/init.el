@@ -51,6 +51,10 @@
 ;;    :init
 ;;    (vertico-mode))
 
+;; git
+(use-package magit
+  :ensure t
+
 ;; icons
 (use-package nerd-icons
   :ensure t
@@ -59,8 +63,6 @@
     (nerd-icons-install-fonts t)))
 
 ;; Startup screen
-
-
 (use-package dashboard
   :ensure t
 
