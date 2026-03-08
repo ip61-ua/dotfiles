@@ -158,6 +158,17 @@ e.g. Sunday, September 17, 2000."
   :ensure t
   :mode ("\\.ya?ml\\'" . yaml-mode))
 
+;; plantuml
+(use-package plantuml-mode
+  :ensure t
+  :mode ("\\.puml\\'" . plantuml-mode)
+  :mode ("\\.plantuml\\'" . plantuml-mode)
+  :mode ("\\.iuml\\'" . plantuml-mode)
+  :config
+  ;; using local package ('executable), to use server ('server)
+  (setq plantuml-default-exec-mode 'executable)
+  (setq plantuml-indent-level 2))
+
 ;; markdown
 (use-package markdown-mode
   :ensure t
@@ -226,10 +237,39 @@ e.g. Sunday, September 17, 2000."
   :config
   (setq python-shell-interpreter "python3"))
 
+;; docker
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
 
+;; web (html, css, js, blade.php, jsx)
+;; npm install -g vscode-langservers-extracted typescript typescript-language-server
+(use-package emmet-mode
+  :ensure t
+  :hook ((web-mode css-mode js2-mode) . emmet-mode)
+  :config
+  (setq emmet-indentation 2))
+
+(use-package web-mode
+  :ensure t
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.jsx?\\'"  . web-mode)
+         ("\\.blade\\.php\\'" . web-mode))
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-enable-auto-pairing t)
+  (setq web-mode-enable-css-colorization t))
+
+(use-package js2-mode ;; pure js
+  :ensure t
+  :mode "\\.js\\'"
+  :config
+  (setq js2-basic-offset 2)
+  (setq js-indent-level 2))
+
+;; egloters
 (use-package eglot
   :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode) . eglot-ensure)
   :bind ("C-c r" . eglot-rename)
@@ -248,20 +288,28 @@ e.g. Sunday, September 17, 2000."
   ;; python 
   (add-to-list 'eglot-server-programs
                '((python-mode) . ("pyright-langserver" "--stdio")))
-  
-  ;; php
+
+  ;; js
   (add-to-list 'eglot-server-programs
-               '((php-mode) . ("intelephense" "--stdio")))
+               '((js2-mode js-mode) . ("typescript-language-server" "--stdio")))
+
+  ;; web
+  (add-to-list 'eglot-server-programs
+               '(web-mode . ("vscode-html-language-server" "--stdio")))
 
   ;; css
   (add-to-list 'eglot-server-programs
-               '((css-mode) . ("vscode-css-language-server" "--stdio")))
-
+               '(css-mode . ("vscode-css-language-server" "--stdio")))
+  
   ;; Format on save for c/c++
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode)
 		(eglot-format-buffer)))))
+
+(add-hook 'js2-mode-hook 'eglot-ensure)
+(add-hook 'web-mode-hook 'eglot-ensure)
+(add-hook 'css-mode-hook 'eglot-ensure)
 
 ;; company
 ;; (use-package company
@@ -284,40 +332,6 @@ e.g. Sunday, September 17, 2000."
   :config
   (setq eldoc-echo-area-use-multiline-p nil) 
   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
-
-;; php
-(use-package php-mode
-  :mode "\\.php\\'"
-  :config
-  (setq php-mode-coding-style 'psr2))
-
-;; css
-(use-package css-mode
-  :ensure nil
-  :config
-  (setq css-indent-offset 2))
-
-;; web
-(use-package web-mode
-  :mode (("\\.html?\\'" . web-mode)
-         ("\\.blade\\.php\\'" . web-mode)
-         ("\\.js\\'" . web-mode))
-  :config
-  ;; blade php
-  (setq web-mode-engines-alist '(("blade" . "\\.blade\\.php\\'")))
-  
-  ;; css, html
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-enable-auto-pairing t)
-  (setq web-mode-enable-css-colorization t))
-
-;; emmet
-(use-package emmet-mode
-  :hook (web-mode css-mode sgml-mode)
-  :config
-  (setq emmet-indentation 2))
 
 ;(use-package yasnippet
 ;  :config
