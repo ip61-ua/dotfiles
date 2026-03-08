@@ -38,7 +38,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 9"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
 
 (fido-mode 1)
 (scroll-bar-mode -1)
