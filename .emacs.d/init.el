@@ -23,7 +23,11 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(corfu dashboard docker dotenv-mode emmet-mode gitignore-templates
+	   golden-ratio gruvbox-theme js2-mode magit markdown-mode
+	   multiple-cursors nerd-icons plantuml-mode pyvenv web-mode
+	   yaml-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -55,6 +59,10 @@
 (use-package magit
   :ensure t
   :bind ("C-x g" . magit-status))
+
+;; gitignore generator
+(use-package gitignore-templates
+  :ensure t)
 
 ;; noob thing to get now and today
 ; Source - https://stackoverflow.com/a/619525
