@@ -24,10 +24,10 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(corfu dashboard docker dotenv-mode emmet-mode gitignore-templates
-	   golden-ratio gruvbox-theme js2-mode magit markdown-mode
-	   multiple-cursors nerd-icons plantuml-mode pyvenv web-mode
-	   yaml-mode)))
+   '(auctex corfu dashboard docker dotenv-mode emmet-mode
+	    gitignore-templates golden-ratio gruvbox-theme js2-mode
+	    magit markdown-mode multiple-cursors nerd-icons
+	    plantuml-mode pyvenv web-mode yaml-mode)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -277,9 +277,20 @@ e.g. Sunday, September 17, 2000."
   (setq js2-basic-offset 2)
   (setq js-indent-level 2))
 
+;; tex latex lualatex pdftex *tex xelatex
+(use-package tex
+  :ensure auctex
+  :mode ("\\.tex\\'" . LaTeX-mode)
+  :config
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)  
+  (setq TeX-PDF-mode t)
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode))
+
 ;; egloters
 (use-package eglot
-  :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode) . eglot-ensure)
+  :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode js2-mode js-mode css-mode web-mode) . eglot-ensure)
   :bind ("C-c r" . eglot-rename)
   :config
   ;; c/c++
@@ -308,16 +319,16 @@ e.g. Sunday, September 17, 2000."
   ;; css
   (add-to-list 'eglot-server-programs
                '(css-mode . ("vscode-css-language-server" "--stdio")))
+
+  ;; *tex
+  (add-to-list 'eglot-server-programs
+               '((latex-mode LaTeX-mode tex-mode) . ("texlab")))
   
   ;; Format on save for c/c++
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode)
 		(eglot-format-buffer)))))
-
-(add-hook 'js2-mode-hook 'eglot-ensure)
-(add-hook 'web-mode-hook 'eglot-ensure)
-(add-hook 'css-mode-hook 'eglot-ensure)
 
 ;; company
 ;; (use-package company
