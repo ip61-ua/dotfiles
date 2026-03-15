@@ -365,19 +365,19 @@ e.g. Sunday, September 17, 2000."
 (global-set-key (kbd "C-j") 'duplicate-line)
 
 ;; Wayland & system clipboard
-(setq select-enable-clipboard t)
-(setq select-enable-primary t)
+;; (setq select-enable-clipboard t)
+;; (setq select-enable-primary t)
 
-(cond
- ((getenv "WAYLAND_DISPLAY")
-  (if (executable-find "wl-copy")
-      (progn
-	(setq interprogram-cut-function
-	      (lambda (text)
-		(unless (bound-and-true-p multiple-cursors-mode)
-		 (start-process "wl-copy" nil "wl-copy" text))))
-	(setq interprogram-paste-function
-	      (lambda ()
-		(unless (bound-and-true-p multiple-cursors-mode)
-		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
-    (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
+;; (cond
+;;  ((getenv "WAYLAND_DISPLAY")
+;;   (if (executable-find "wl-copy")
+;;       (progn
+;; 	(setq interprogram-cut-function
+;; 	      (lambda (text)
+;; 		(unless (bound-and-true-p multiple-cursors-mode)
+;; 		 (start-process "wl-copy" nil "wl-copy" text))))
+;; 	(setq interprogram-paste-function
+;; 	      (lambda ()
+;; 		(unless (bound-and-true-p multiple-cursors-mode)
+;; 		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
+;;     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
