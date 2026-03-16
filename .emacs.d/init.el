@@ -26,7 +26,7 @@
  '(package-selected-packages
    '(auctex corfu dashboard docker dotenv-mode emmet-mode
 	    gitignore-templates golden-ratio gruvbox-theme js2-mode
-	    magit markdown-mode multiple-cursors nerd-icons
+	    ligature magit markdown-mode multiple-cursors nerd-icons
 	    plantuml-mode pyvenv web-mode yaml-mode)))
 
 (custom-set-faces
@@ -36,7 +36,9 @@
  ;; If there is more than one, they won't work right.
  )
 
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
+;;(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
+
+(set-face-attribute 'default nil :font "SF Mono" :height 110)
 
 (fido-mode 1)
 (scroll-bar-mode -1)
@@ -54,6 +56,25 @@
 ;;    :ensure t
 ;;    :init
 ;;    (vertico-mode))
+
+; Font ligature
+(use-package ligature
+  :ensure t
+  :config
+  (global-ligature-mode t)
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://")))
 
 ;; git
 (use-package magit
