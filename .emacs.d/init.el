@@ -29,16 +29,11 @@
 	    ligature magit markdown-mode multiple-cursors nerd-icons
 	    plantuml-mode pyvenv web-mode yaml-mode)))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;;(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
+;;(set-face-attribute 'default nil :font "SF Mono" :height 110) ; Apple
 
-(set-face-attribute 'default nil :font "SF Mono" :height 110)
+(set-face-attribute 'default nil :font "Fira Code" :height 110)
 
 (fido-mode 1)
 (scroll-bar-mode -1)
