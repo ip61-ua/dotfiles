@@ -27,7 +27,7 @@
    '(auctex corfu dashboard docker dotenv-mode emmet-mode
 	    gitignore-templates golden-ratio gruvbox-theme js2-mode
 	    ligature magit markdown-mode multiple-cursors nerd-icons
-	    plantuml-mode pyvenv web-mode yaml-mode)))
+	    plantuml-mode pyvenv somafm web-mode yaml-mode)))
 
 
 ;;(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
@@ -94,6 +94,13 @@
 e.g. Sunday, September 17, 2000."
   (interactive)
   (format-time-string "%A, %B %e, %Y"))
+
+;; radio - somafm
+(use-package somafm
+  :ensure t
+  :config
+  (setq somafm-player-command "mpv"
+        somafm-player-parameters '("--no-video")))
 
 ;; icons
 (use-package nerd-icons
@@ -397,3 +404,9 @@ e.g. Sunday, September 17, 2000."
 ;; 		(unless (bound-and-true-p multiple-cursors-mode)
 ;; 		  (shell-command-to-string "wl-paste -n | tr -d \r")))))
 ;;     (message "WARNING: You are on Wayland and wl-clipboard utilities are not installed on this system. "))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
