@@ -312,11 +312,26 @@ e.g. Sunday, September 17, 2000."
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode))
 
 ;; java-eglot specific
+(defun mi-java-macro-save-compile-test ()
+  (interactive)
+  (save-some-buffers t)
+  (if-let ((proj (project-current)))
+      (let ((default-directory (project-root proj)))
+        (message "Maven started building...")
+        
+        (let ((exit-code (shell-command "mvn clean test")))
+          (if (= exit-code 0)
+              (progn
+                (message "Maven succeed!")
+                (call-interactively 'eglot-java-run-test))
+            (message "Maven failled! Check out *Shell Command Output*."))))
+    (error "Are you trolling me? No pom.xml found nor git.")))
+
 (use-package eglot-java
   :ensure t
   :hook (java-mode . eglot-java-mode)
   :bind (:map java-mode-map
-              ("<f6>" . eglot-java-run-test)))
+              ("<f6>" . mi-java-macro-save-compile-test)))
 ;;; mvn test -Dtest=NombreDeTuClaseTest -Dmaven.surefire.debug
 ;;; jdtls :request "attach" :hostName "localhost" :port 5005
 
@@ -361,6 +376,17 @@ e.g. Sunday, September 17, 2000."
 
 ;; code actions
 (global-set-key (kbd "C-c c") 'eglot-code-actions)
+
+;; jdtls rules
+(defun mi-java-config-jdtls ()
+  (setq c-basic-offset 4)
+  (setq java-ts-mode-indent-offset 4)
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil)
+  (local-set-key (kbd "RET") 'newline-and-indent))
+
+(add-hook 'java-mode-hook 'mi-java-config-jdtls)
+(add-hook 'java-ts-mode-hook 'mi-java-config-jdtls)
 
 ;; egloters
 (use-package eglot
