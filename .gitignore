@@ -1,6 +1,7 @@
 *
 !.gitignore
 !.emacs.d/
+!.emacs.d/snippets/*
 .emacs.d/*
 !.emacs.d/init.el
 !fix_bluetooth.sh

@@ -335,12 +335,12 @@ e.g. Sunday, September 17, 2000."
 ;; Debugger adapter
 (use-package dape
   :ensure t
-  :bind (("C-x C-a C-b" . dape-breakpoint-toggle) ; [B]reakpoint
-         ("C-x C-a C-r" . dape-continue)          ; [R]un / Continue
-         ("C-x C-a C-n" . dape-next)              ; [N]ext (Step over)
-         ("C-x C-a C-s" . dape-step-in)           ; [S]tep into
-         ("C-x C-a C-f" . dape-step-out)          ; [F]inish (Step out)
-         ("C-x C-a C-q" . dape-quit))             ; [Q]uit
+  :bind (("C-x C-a b" . dape-breakpoint-toggle) ; [B]reakpoint
+         ("C-x C-a r" . dape-continue)          ; [R]un / Continue
+         ("C-x C-a n" . dape-next)              ; [N]ext (Step over)
+         ("C-x C-a s" . dape-step-in)           ; [S]tep into
+         ("C-x C-a f" . dape-step-out)          ; [F]inish (Step out)
+         ("C-x C-a q" . dape-quit))             ; [Q]uit
   :config
   (setq dape-inlay-hints t)
   (add-hook 'dape-on-start-hooks 'dape-info)
