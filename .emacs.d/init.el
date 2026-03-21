@@ -69,8 +69,8 @@
                                        ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
                                        "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
                                        "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                       "\\\\" "://")))
+                                       "?=" "?." "??" ";;;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://" ";;")))
 
 ;; git
 (use-package magit
@@ -316,8 +316,9 @@ e.g. Sunday, September 17, 2000."
   :ensure t
   :hook (java-mode . eglot-java-mode)
   :bind (:map java-mode-map
-              ("<f6>" . eglot-java-run-test)
-              ("<f7>" . eglot-java-run-project-tests)))
+              ("<f6>" . eglot-java-run-test)))
+;;; mvn test -Dtest=NombreDeTuClaseTest -Dmaven.surefire.debug
+;;; jdtls :request "attach" :hostName "localhost" :port 5005
 
 ;; ansi escape colors out output maven colors junit thingy
 (require 'ansi-color)
@@ -334,8 +335,29 @@ e.g. Sunday, September 17, 2000."
 ;; Debugger adapter
 (use-package dape
   :ensure t
+  :bind (("C-x C-a C-b" . dape-breakpoint-toggle) ; [B]reakpoint
+         ("C-x C-a C-r" . dape-continue)          ; [R]un / Continue
+         ("C-x C-a C-n" . dape-next)              ; [N]ext (Step over)
+         ("C-x C-a C-s" . dape-step-in)           ; [S]tep into
+         ("C-x C-a C-f" . dape-step-out)          ; [F]inish (Step out)
+         ("C-x C-a C-q" . dape-quit))             ; [Q]uit
   :config
-  (setq dape-inlay-hints t))
+  (setq dape-inlay-hints t)
+  (add-hook 'dape-on-start-hooks 'dape-info)
+  (add-hook 'dape-on-stopped-hooks 'dape-info-buffer-cleanup))
+
+;; jave dape debug
+(defvar my-java-debug-plugin (expand-file-name "com.microsoft.java.debug.plugin.jar" user-emacs-directory))
+
+(unless (file-exists-p my-java-debug-plugin)
+  (message "Downloading debug java engine...")
+  (url-copy-file "https://repo1.maven.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.1/com.microsoft.java.debug.plugin-0.53.1.jar" my-java-debug-plugin t))
+
+(defun my-setup-jdtls-debug (server eglot-java-eclipse-jdt)
+  ;; Inyecting the .jar
+  `(:bundles [,my-java-debug-plugin]))
+
+(setq eglot-java-user-init-opts-fn 'my-setup-jdtls-debug)
 
 ;; code actions
 (global-set-key (kbd "C-c c") 'eglot-code-actions)
