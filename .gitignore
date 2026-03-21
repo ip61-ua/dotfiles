@@ -2,6 +2,8 @@
 !.gitignore
 !.emacs.d/
 .emacs.d/*
-!.emacs.d/snippets/*
 !.emacs.d/init.el
+!.emacs.d/snippets/java-mode/*
 !fix_bluetooth.sh
+!.emacs.d/snippets/
+!.emacs.d/snippets/**

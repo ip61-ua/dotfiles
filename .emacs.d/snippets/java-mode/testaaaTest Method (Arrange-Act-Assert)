@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Test Method (Arrange-Act-Assert)
+# key: testaaa
+# --
+@Test
+void ${1:id}_${2:method}_should_${3:result}_when_${4:condition}() {
+    // Arrange
+    $5
+
+    // Act
+    $6
+
+    // Assert
+    $0
+}
