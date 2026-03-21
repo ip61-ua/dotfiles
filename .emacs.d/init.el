@@ -24,10 +24,11 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(auctex corfu dashboard docker dotenv-mode emmet-mode
+   '(auctex corfu dape dashboard docker dotenv-mode eglot-java emmet-mode
 	    gitignore-templates golden-ratio gruvbox-theme js2-mode
 	    ligature magit markdown-mode multiple-cursors nerd-icons
-	    plantuml-mode pyvenv somafm web-mode yaml-mode)))
+	    plantuml-mode pyvenv somafm web-mode yaml-mode yasnippet
+	    yasnippet-snippets)))
 
 
 ;;(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
@@ -101,7 +102,6 @@ e.g. Sunday, September 17, 2000."
   :config
   (setq somafm-player-command "mpv"
         somafm-player-parameters '("--no-video")))
-
 ;; icons
 (use-package nerd-icons
   :ensure t
@@ -311,6 +311,24 @@ e.g. Sunday, September 17, 2000."
   (setq TeX-PDF-mode t)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode))
 
+;; java-eglot specific
+(use-package eglot-java
+  :ensure t
+  :hook (java-mode . eglot-java-mode))
+
+;; auto project pom maven 
+(with-eval-after-load 'project
+  (add-to-list 'project-vc-extra-root-markers "pom.xml"))
+
+;; Debugger adapter
+(use-package dape
+  :ensure t
+  :config
+  (setq dape-inlay-hints t))
+
+;; code actions
+(global-set-key (kbd "C-c c") 'eglot-code-actions)
+
 ;; egloters
 (use-package eglot
   :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode js2-mode js-mode css-mode web-mode) . eglot-ensure)
@@ -346,11 +364,11 @@ e.g. Sunday, September 17, 2000."
   ;; *tex
   (add-to-list 'eglot-server-programs
                '((latex-mode LaTeX-mode tex-mode) . ("texlab")))
-  
+
   ;; Format on save for c/c++
   (add-hook 'before-save-hook
 	    (lambda ()
-	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode)
+	      (when (derived-mode-p 'c++-mode 'c-mode 'python-mode 'java-mode)
 		(eglot-format-buffer)))))
 
 ;; company
@@ -375,11 +393,13 @@ e.g. Sunday, September 17, 2000."
   (setq eldoc-echo-area-use-multiline-p nil) 
   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
 
-;(use-package yasnippet
-;  :config
-;  (yas-global-mode 1))
-;
-;(use-package yasnippet-snippets)
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :ensure t)
 
 ;; keys
 (global-set-key (kbd "C-c s") 'shell)
@@ -410,3 +430,4 @@ e.g. Sunday, September 17, 2000."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'upcase-region 'disabled nil)
