@@ -314,7 +314,18 @@ e.g. Sunday, September 17, 2000."
 ;; java-eglot specific
 (use-package eglot-java
   :ensure t
-  :hook (java-mode . eglot-java-mode))
+  :hook (java-mode . eglot-java-mode)
+  :bind (:map java-mode-map
+              ("<f6>" . eglot-java-run-test)
+              ("<f7>" . eglot-java-run-project-tests)))
+
+;; ansi escape colors out output maven colors junit thingy
+(require 'ansi-color)
+(defun color-compilation-buffer ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+
+(add-hook 'compilation-filter-hook 'color-compilation-buffer)
 
 ;; auto project pom maven 
 (with-eval-after-load 'project
