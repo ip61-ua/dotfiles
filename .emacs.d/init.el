@@ -34,7 +34,8 @@
 ;;(add-to-list 'default-frame-alist '(font . "JetBrains Mono NL 11"))
 ;;(set-face-attribute 'default nil :font "SF Mono" :height 110) ; Apple
 
-(set-face-attribute 'default nil :font "Fira Code" :height 110)
+(set-face-attribute 'default nil :font "Fira Code" :height 120)
+;; (set-face-attribute 'default nil :font "JetBrains Mono NL" :height 110)
 
 (fido-mode 1)
 (scroll-bar-mode -1)
@@ -327,13 +328,39 @@ e.g. Sunday, September 17, 2000."
             (message "Maven failled! Check out *Shell Command Output*."))))
     (error "Are you trolling me? No pom.xml found nor git.")))
 
+(defun mi-java-macro-save-debug-test ()
+  (interactive)
+  (save-some-buffers t)
+  (if-let ((proj (project-current)))
+      (let ((default-directory (project-root proj))
+            (java-buf (current-buffer)))
+        (when (get-buffer "*compilation*")
+          (let ((proc (get-buffer-process "*compilation*")))
+            (when proc (delete-process proc))))
+        (message "Maven started building and serving debug server...")
+        (compilation-start "mvn test -Dmaven.surefire.debug" 'compilation-mode)
+        (run-with-timer 5 nil
+                        (lambda ()
+                          (with-current-buffer java-buf
+                            (message "Attaching debugger at port 5005...")
+                            (let* ((base (alist-get 'jdtls dape-configs))
+                                   (config
+                                    (list 'modes  (plist-get base 'modes)
+                                          'ensure (plist-get base 'ensure)
+                                          'fn     (plist-get base 'fn)
+                                          :request  "attach"
+                                          :hostName "localhost"
+                                          :port     5005
+                                          :filePath (buffer-file-name java-buf))))
+                              (dape config))))))
+    (error "Are you trolling me? No pom.xml found nor git.")))
+
 (use-package eglot-java
   :ensure t
   :hook (java-mode . eglot-java-mode)
   :bind (:map java-mode-map
-              ("<f6>" . mi-java-macro-save-compile-test)))
-;;; mvn test -Dtest=NombreDeTuClaseTest -Dmaven.surefire.debug
-;;; jdtls :request "attach" :hostName "localhost" :port 5005
+              ("<f4>" . mi-java-macro-save-compile-test)
+              ("<f5>" . mi-java-macro-save-debug-test)))
 
 ;; ansi escape colors out output maven colors junit thingy
 (require 'ansi-color)
