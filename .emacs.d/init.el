@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
 ;;;; TODO: make JAVA eglot cache go away
-;;;; TODO: make easy for multi module maven
+;;;; TODO?: make easy for multi module maven
 ;;;; TODO: make easy to choose Java version
 ;;;; TODO: remember all the emacs key bindings
 
@@ -122,7 +122,7 @@
 ;;;; * Temporal files (cache, backups)
 (defvar mi-temporal-backup-dir (expand-file-name "backups/" user-emacs-directory))
 (defvar mi-temporal-auto-save-dir (expand-file-name "auto-saves/" user-emacs-directory))
-(defvar mi-emacs-cache-dir (expand-file-name "cache/" user-emacs-directory))
+(defvar mi-temporal-cache-dir (expand-file-name "cache/" user-emacs-directory))
 
 (unless (file-exists-p mi-temporal-backup-dir)
   (make-directory mi-temporal-backup-dir t))
@@ -139,10 +139,7 @@
 (unless (file-exists-p mi-emacs-cache-dir)
   (make-directory mi-emacs-cache-dir t))
 
-(setq backup-directory-alist `(("." . ,mi-emacs-cache-dir)))
 (setq make-backup-files t)
-
-(setq auto-save-file-name-transforms `((".*" ,mi-emacs-cache-dir t)))
 (setq create-lockfiles nil)
 (setq backup-by-copying t)
 (setq delete-old-versions t)
@@ -168,11 +165,7 @@
   (add-to-list 'golden-ratio-extra-commands 'windmove-right)
   (add-to-list 'golden-ratio-extra-commands 'windmove-up)
   (add-to-list 'golden-ratio-extra-commands 'windmove-down)
-  (setq golden-ratio-exclude-modes
-        '(ediff-mode
-          "calendar-mode"
-          "calc-mode"
-          "dired-mode")))
+  (setq golden-ratio-exclude-modes '(ediff-mode "")))
 
 
 ;;;; ** Multicursors 
