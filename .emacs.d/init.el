@@ -1,5 +1,9 @@
 ;;; -*- lexical-binding: t -*-
 
+;;;; TODO: make JAVA eglot cache go away
+;;;; TODO: make easy for multi module maven
+;;;; TODO: make easy to choose Java version
+;;;; TODO: remember all the emacs key bindings
 
 ;;;; * Autoupdate and enable third party packages from melpa
 (require 'package)
@@ -26,12 +30,7 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages
-   '(auctex corfu dape dashboard docker dotenv-mode eglot-java emmet-mode
-	    gitignore-templates golden-ratio gruvbox-theme js2-mode
-	    ligature magit markdown-mode multiple-cursors nerd-icons
-	    plantuml-mode pyvenv somafm web-mode yaml-mode yasnippet
-	    yasnippet-snippets)))
+)
 
 
 ;;;; * Apparence
