@@ -115,18 +115,29 @@
 
 
 ;;;; * Temporal files (cache, backups)
-(defvar my-backup-dir (expand-file-name "backups/" user-emacs-directory))
-(defvar my-auto-save-dir (expand-file-name "auto-saves/" user-emacs-directory))
+(defvar mi-temporal-backup-dir (expand-file-name "backups/" user-emacs-directory))
+(defvar mi-temporal-auto-save-dir (expand-file-name "auto-saves/" user-emacs-directory))
+(defvar mi-emacs-cache-dir (expand-file-name "cache/" user-emacs-directory))
 
-(unless (file-exists-p my-backup-dir)
-  (make-directory my-backup-dir t))
+(unless (file-exists-p mi-temporal-backup-dir)
+  (make-directory mi-temporal-backup-dir t))
 
-(unless (file-exists-p my-auto-save-dir)
-  (make-directory my-auto-save-dir t))
+(unless (file-exists-p mi-temporal-auto-save-dir)
+  (make-directory mi-temporal-auto-save-dir t))
 
-(setq backup-directory-alist `(("." . ,my-backup-dir)))
-(setq auto-save-file-name-transforms `((".*" ,my-auto-save-dir t)))
+(unless (file-exists-p mi-emacs-cache-dir)
+  (make-directory mi-emacs-cache-dir t))
 
+(setq backup-directory-alist `(("." . ,mi-temporal-backup-dir)))
+(setq auto-save-file-name-transforms `((".*" ,mi-temporal-auto-save-dir t)))
+
+(unless (file-exists-p mi-emacs-cache-dir)
+  (make-directory mi-emacs-cache-dir t))
+
+(setq backup-directory-alist `(("." . ,mi-emacs-cache-dir)))
+(setq make-backup-files t)
+
+(setq auto-save-file-name-transforms `((".*" ,mi-emacs-cache-dir t)))
 (setq create-lockfiles nil)
 (setq backup-by-copying t)
 (setq delete-old-versions t)
@@ -136,6 +147,10 @@
 
 
 ;;;; * General window and editor agnostics settings 
+;;;; ** General spacing
+(setq-default c-basic-offset 4)
+
+
 ;;;; ** Window navigation
 (windmove-default-keybindings) ;; Enable using S-<arrow> to move between windows 
 
@@ -191,10 +206,6 @@
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 (global-set-key (kbd "C-j") 'duplicate-line)
-
-
-;;;; ** General spacing
-(setq-default c-basic-offset 4)
 
 
 ;;;; * SVN
@@ -410,21 +421,55 @@
               ("<f5>" . mi-java-mvn-save-debug-test)))
 
 
-;;;; *** Maven pom.xml integration
+;;;; *** Maven multi-module & Project integration
 (with-eval-after-load 'project
   (add-to-list 'project-vc-extra-root-markers "pom.xml"))
 
+;;;; *** Debug integration (dape)
+(defvar mi-java-debug-plugin-dir (expand-file-name "java-debug/" user-emacs-directory))
+(defvar mi-java-debug-plugin-xml "https://repo1.maven.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/maven-metadata.xml")
+(defvar mi-java-debug-plugin-url-fmt "https://repo1.maven.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/%s/%s")
+(defvar mi-java-debug-plugin-jar-fmt "com.microsoft.java.debug.plugin-%s.jar")
 
-;;; *** Debug integration (dape)
-(defvar mi-java-debug-plugin-jar (expand-file-name "com.microsoft.java.debug.plugin.jar" user-emacs-directory))
-(defvar mi-java-debug-plugin-url "https://repo1.maven.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/0.53.1/com.microsoft.java.debug.plugin-0.53.1.jar")
-
-(unless (file-exists-p mi-java-debug-plugin-jar)
-  (message "Downloading debug java engine...")
-  (url-copy-file mi-java-debug-plugin-url mi-java-debug-plugin-jar t))
+(defun mi-java-update-debugger ()
+  "Fetch && downloads automatically latest version of the debugger from Maven Central."
+  (interactive)
+  (unless (file-exists-p mi-java-debug-plugin-dir)
+    (make-directory mi-java-debug-plugin-dir t))
+  
+  (message "Fetching debugger plugin from Maven Central...")
+  (let* ((metadata-url mi-java-debug-plugin-xml) 
+         (buffer (url-retrieve-synchronously metadata-url))
+         version)
+    (with-current-buffer buffer
+      (goto-char (point-min))
+      (when (re-search-forward "<release>\\(.*?\\)</release>" nil t)
+        (setq version (match-string 1)))
+      (kill-buffer))
+    
+    (if version
+        (let* ((jar-name (format  mi-java-debug-plugin-jar-fmt version))
+               (jar-url (format mi-java-debug-plugin-url-fmt version jar-name))
+               (jar-dest (expand-file-name jar-name mi-java-debug-plugin-dir)))
+          
+          (if (file-exists-p jar-dest)
+              (message "Debugger plugin (%s) installed." version)
+	    
+            (dolist (f (directory-files mi-java-debug-plugin-dir t "\\.jar$"))
+              (delete-file f))
+            (message "Downloading version %s..." version)
+            (url-copy-file jar-url jar-dest t)
+            (message "Debugger plugin (%s) installed." version)))
+      (error "Unable to retrive from Maven Central."))))
 
 (defun mi-java-debug-plugin-setup (server eglot-java-eclipse-jdt)
-  `(:bundles [,mi-java-debug-plugin-jar]))
+  "Inyecta el .jar del depurador en JDTLS leyendo la carpeta local."
+  (let ((jars (when (file-exists-p mi-java-debug-plugin-dir)
+                (directory-files mi-java-debug-plugin-dir t "\\.jar$"))))
+    (if jars
+        `(:bundles [,(car jars)])
+      (message "No debugger found. Run M-x mi-java-update-debugger")
+      nil)))
 
 (setq eglot-java-user-init-opts-fn 'mi-java-debug-plugin-setup)
 
