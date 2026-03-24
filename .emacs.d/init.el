@@ -30,7 +30,12 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
-)
+ '(package-selected-packages
+   '(auctex corfu dape dashboard docker dotenv-mode eglot-java emmet-mode
+	    gitignore-templates golden-ratio gruvbox-theme js2-mode
+	    ligature magit markdown-mode multiple-cursors nerd-icons
+	    plantuml-mode pyvenv smartparens somafm web-mode yaml-mode
+	    yasnippet-snippets)))
 
 
 ;;;; * Apparence
@@ -206,6 +211,14 @@
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 (global-set-key (kbd "C-j") 'duplicate-line)
+
+
+;;;; ** Autoclosing pairs and smart manager
+(use-package smartparens
+  :ensure t
+  :hook ((prog-mode text-mode) . smartparens-mode)
+  :config
+  (require 'smartparens-config))
 
 
 ;;;; * SVN
@@ -524,3 +537,9 @@
 	      (when (and (eglot-managed-p) 
 			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'java-mode))
 		(eglot-format-buffer)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
