@@ -203,6 +203,17 @@
 (global-set-key (kbd "C-j") 'duplicate-line)
 
 
+;;;; ** Cheat sheet
+(use-package which-key
+  :ensure t
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 1.5)
+  (setq which-key-side-window-location 'bottom
+        which-key-sort-order 'which-key-key-order-alpha
+        which-key-add-column-padding 1))
+
+
 ;;;; ** Autoclosing pairs and smart manager
 (use-package smartparens
   :ensure t
