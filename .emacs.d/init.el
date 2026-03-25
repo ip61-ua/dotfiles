@@ -130,14 +130,11 @@
 (unless (file-exists-p mi-temporal-auto-save-dir)
   (make-directory mi-temporal-auto-save-dir t))
 
-(unless (file-exists-p mi-emacs-cache-dir)
-  (make-directory mi-emacs-cache-dir t))
+(unless (file-exists-p mi-temporal-cache-dir)
+  (make-directory mi-temporal-cache-dir t))
 
 (setq backup-directory-alist `(("." . ,mi-temporal-backup-dir)))
 (setq auto-save-file-name-transforms `((".*" ,mi-temporal-auto-save-dir t)))
-
-(unless (file-exists-p mi-emacs-cache-dir)
-  (make-directory mi-emacs-cache-dir t))
 
 (setq make-backup-files t)
 (setq create-lockfiles nil)
