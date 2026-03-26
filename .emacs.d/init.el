@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t -*-
 
+;;;;
 ;;;; TODO: make JAVA eglot cache go away
 ;;;; TODO?: make easy for multi module maven
 ;;;; TODO: make easy to choose Java version
@@ -97,6 +98,7 @@
 
 (when (find-font (font-spec :name mi-font))
   (set-face-attribute 'default nil :font mi-font :height 120))
+
 
 ;;;; *** Ligatures
 (use-package ligature									           
@@ -436,6 +438,7 @@
 (use-package eglot-java
   :ensure t
   :hook (java-mode . eglot-java-mode)
+  :init (require 'cc-mode)
   :bind (:map java-mode-map
               ("<f4>" . mi-java-mvn-save-compile-test)
               ("<f5>" . mi-java-mvn-save-debug-test)))
