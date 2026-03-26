@@ -38,7 +38,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-miramare t)
+  (load-theme 'doom-tokyo-night t) ;; <- Configure theme here (https://melpa.org/#/doom-themes)
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config))
 
