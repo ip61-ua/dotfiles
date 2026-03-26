@@ -1,11 +1,5 @@
 ;;; -*- lexical-binding: t -*-
 
-;;;;
-;;;; TODO: make JAVA eglot cache go away
-;;;; TODO?: make easy for multi module maven
-;;;; TODO: make easy to choose Java version
-;;;; TODO: remember all the emacs key bindings
-
 ;;;; * Autoupdate and enable third party packages from melpa
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -15,12 +9,12 @@
 
 
 ;;;; * Emacs own thing
+;;  '(custom-enabled-themes '(leuven-dark))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(leuven-dark))
  '(custom-safe-themes
    '("d80952c58cf1b06d936b1392c38230b74ae1a2a6729594770762dc0779ac66b7"
      default))
@@ -32,19 +26,21 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(auctex corfu dape dashboard docker dotenv-mode eglot-java emmet-mode
-	    gitignore-templates golden-ratio gruvbox-theme js2-mode
-	    ligature magit markdown-mode multiple-cursors nerd-icons
-	    plantuml-mode pyvenv smartparens somafm web-mode yaml-mode
-	    yasnippet-snippets)))
+   '(auctex corfu dape dashboard docker doom-modeline doom-themes
+	    dotenv-mode eglot-java emmet-mode gitignore-templates
+	    golden-ratio js2-mode ligature magit markdown-mode
+	    multiple-cursors nerd-icons plantuml-mode pyvenv
+	    smartparens somafm web-mode yaml-mode yasnippet-snippets)))
 
 
 ;;;; * Apparence
 ;;;; ** Theme and colors
-(use-package gruvbox-theme
+(use-package doom-themes
   :ensure t
   :config
-  (load-theme 'gruvbox-dark-hard t))
+  (load-theme 'doom-miramare t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-treemacs-config))
 
 (require 'ansi-color)
 
@@ -53,6 +49,20 @@
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
 (add-hook 'compilation-filter-hook 'color-compilation-buffer)
+
+
+;;;; ** Minibuffer ++
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom
+  (doom-modeline-height 35)
+  (doom-modeline-bar-width 4)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-major-mode-color-icon t)
+  (doom-modeline-buffer-state-icon t)
+  (doom-modeline-buffer-modification-icon t))
 
 
 ;;;; ** Startup screen
@@ -117,6 +127,7 @@
 
 
 ;;;; ** User Interface
+(add-to-list 'default-frame-alist '(internal-border-width . 10)) ;; Inner margin
 (fido-mode 1) ;; Autocompletion for minibuffer
 (scroll-bar-mode -1) ;; Remove scrollbars
 (column-number-mode) ;; Relative numbers on column
