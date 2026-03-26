@@ -87,10 +87,16 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(set-face-attribute 'default nil :font "Fira Code" :height 120)          ;; By tonsky
-;(set-face-attribute 'default nil :font "SF Mono" :height 110)            ;; Apple (no liga support)
-;(set-face-attribute 'default nil :font "JetBrains Mono NL" :height 110)  ;; JetBrains
+(defvar mi-font "Fira Code")
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Fira Code            ;; By tonsky		   ;;
+;; SF Mono              ;; Apple (no liga support) ;;
+;; JetBrains Mono NL    ;; JetBrains		   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(when (find-font (font-spec :name mi-font))
+  (set-face-attribute 'default nil :font mi-font :height 120))
 
 ;;;; *** Ligatures
 (use-package ligature									           
