@@ -54,7 +54,7 @@
 (add-hook 'compilation-filter-hook 'color-compilation-buffer)
 
 
-;;;; ** Minibuffer ++
+;;;; ** Minibuffer aesthetics
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
@@ -66,23 +66,6 @@
   (doom-modeline-major-mode-color-icon t)
   (doom-modeline-buffer-state-icon t)
   (doom-modeline-buffer-modification-icon t))
-
-(use-package vertico
-  :ensure t
-  :init
-  (vertico-mode 1))
-
-(use-package orderless
-  :ensure t
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
-
-(use-package marginalia
-  :ensure t
-  :init
-  (marginalia-mode 1))
 
 
 ;;;; ** Startup screen
@@ -185,6 +168,34 @@
 
 
 ;;;; * General window and editor agnostics settings 
+;;;; ** Minibuffer ++
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode 1))
+
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode 1))
+
+
 ;;;; ** Save cmd and search history
 (use-package savehist
   :ensure nil
