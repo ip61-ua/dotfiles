@@ -267,7 +267,7 @@
 (global-set-key (kbd "C-c s") 'shell)
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
-(global-set-key (kbd "C-j") 'duplicate-line)
+(global-set-key (kbd "C-c y") 'duplicate-line)
 
 
 ;;;; ** Cheat sheet
@@ -381,6 +381,15 @@
 
 
 ;;;; * Languges
+;;;; ** Web (HTML, CSS, JS)
+(use-package emmet-mode
+  :ensure t
+  :hook ((mhtml-mode . emmet-mode)
+         (css-mode . emmet-mode))
+  :config
+  (setq emmet-move-cursor-between-quotes t))
+
+
 ;;;; ** Enviroment files (.env)
 (use-package dotenv-mode
   :ensure t
