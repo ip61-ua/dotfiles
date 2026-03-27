@@ -185,6 +185,13 @@
 
 
 ;;;; * General window and editor agnostics settings 
+;;;; ** Save cmd and search history
+(use-package savehist
+  :ensure nil
+  :init
+  (savehist-mode))
+
+
 ;;;; ** General spacing
 (setq-default c-basic-offset 4)
 
