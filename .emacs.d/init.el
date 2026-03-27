@@ -28,9 +28,10 @@
  '(package-selected-packages
    '(auctex corfu dape dashboard docker doom-modeline doom-themes
 	    dotenv-mode eglot-java emmet-mode gitignore-templates
-	    golden-ratio js2-mode ligature magit markdown-mode
-	    multiple-cursors nerd-icons plantuml-mode pyvenv
-	    smartparens somafm web-mode yaml-mode yasnippet-snippets)))
+	    golden-ratio js2-mode ligature magit marginalia
+	    markdown-mode multiple-cursors nerd-icons orderless
+	    plantuml-mode pyvenv smartparens somafm vertico web-mode
+	    yaml-mode yasnippet-snippets)))
 
 
 ;;;; * Apparence
@@ -38,6 +39,8 @@
 (use-package doom-themes
   :ensure t
   :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
   (load-theme 'doom-tokyo-night t) ;; <- Configure theme here (https://melpa.org/#/doom-themes)
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config))
@@ -63,6 +66,23 @@
   (doom-modeline-major-mode-color-icon t)
   (doom-modeline-buffer-state-icon t)
   (doom-modeline-buffer-modification-icon t))
+
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode 1))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode 1))
 
 
 ;;;; ** Startup screen
@@ -98,7 +118,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(defvar mi-font "Fira Code")
+ (defvar mi-font " Fira Code")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Fira Code            ;; By tonsky		   ;;
@@ -115,7 +135,7 @@
   :ensure t											   
   :config											   
   (global-ligature-mode t)									   
-  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"   ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="  "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"  "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"  "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"  "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~=" "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"  "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"  ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"  "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"  "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"  "?=" "?." "??" ";;;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)" "\\\\" "://" ";;")))
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"   ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="  "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"  "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"  "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"  "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~=" "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"  "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"  ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"  "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"  "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"  "?=" "?." "??" ";;;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)" "\\\\" "://" ";;" "<---" "<----" "<-----" "<------" "<-------" "<--------" "<---------" "<----------" "<-----------" "<------------" "<-------------" "<--------------")))
 
 
 ;;;; *** Icons
@@ -128,7 +148,7 @@
 
 ;;;; ** User Interface
 (add-to-list 'default-frame-alist '(internal-border-width . 10)) ;; Inner margin
-(fido-mode 1) ;; Autocompletion for minibuffer
+;;(fido-mode 1) ;; Autocompletion for minibuffer
 (scroll-bar-mode -1) ;; Remove scrollbars
 (column-number-mode) ;; Relative numbers on column
 (tool-bar-mode -1) ;; Hide GTK menu
