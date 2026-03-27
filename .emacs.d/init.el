@@ -545,7 +545,7 @@
       (error "Unable to retrive from Maven Central."))))
 
 (defun mi-java-debug-plugin-setup (server eglot-java-eclipse-jdt)
-  "Inyecta el .jar del depurador en JDTLS leyendo la carpeta local."
+  "Injects debugger .jar's in JDTLS reading local directory."
   (let ((jars (when (file-exists-p mi-java-debug-plugin-dir)
                 (directory-files mi-java-debug-plugin-dir t "\\.jar$"))))
     (if jars
