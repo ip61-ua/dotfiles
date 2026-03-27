@@ -26,7 +26,7 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(auctex corfu dape dashboard docker doom-modeline doom-themes
+   '(auctex consult corfu dape dashboard docker doom-modeline doom-themes
 	    dotenv-mode eglot-java emmet-mode gitignore-templates
 	    golden-ratio js2-mode ligature magit marginalia
 	    markdown-mode multiple-cursors nerd-icons orderless
@@ -194,6 +194,16 @@
   :ensure t
   :init
   (marginalia-mode 1))
+
+
+;;;; ** Search Find Alfredo Query Consult
+(use-package consult
+  :ensure t
+  :bind (
+         ("C-s" . consult-line)     ;; Find in file
+         ("M-g i" . consult-imenu)  ;; Symbols code navigator
+         ("C-x b" . consult-buffer) ;; Buffer manager
+         ("M-s g" . consult-grep))) ;; Search text across the entire project
 
 
 ;;;; ** Save cmd and search history
