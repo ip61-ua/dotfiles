@@ -101,7 +101,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
- (defvar mi-font " Fira Code")
+(defvar mi-font " Fira Code")
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Fira Code            ;; By tonsky		   ;;
@@ -505,7 +505,8 @@
 
 ;;;; *** Maven multi-module & Project integration
 (with-eval-after-load 'project
-  (add-to-list 'project-vc-extra-root-markers "pom.xml"))
+  (add-to-list 'project-vc-extra-root-markers "pom.xml")
+  (add-to-list 'project-vc-extra-root-markers ".project"))
 
 ;;;; *** Debug integration (dape)
 (defvar mi-java-debug-plugin-dir (expand-file-name "java-debug/" user-emacs-directory))
@@ -569,6 +570,13 @@
 
 
 ;;;; * lsp eglotters
+;;;; ** Languages
+;;;; *** Web
+;; This requieres run npm install -g vscode-langservers-extracted typescript typescript-language-server
+(add-hook 'mhtml-mode-hook 'eglot-ensure)
+(add-hook 'css-mode-hook 'eglot-ensure)
+(add-hook 'js-mode-hook 'eglot-ensure)
+
 (use-package eglot
   :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode) . eglot-ensure)
   :bind
@@ -576,8 +584,6 @@
   ("C-c c" . eglot-code-actions)
   :config
 
-
-  ;;;; ** Languages
   ;;;; *** C/C++
   (add-to-list 'eglot-server-programs
 	       '((c++-mode c-mode)
@@ -606,6 +612,7 @@
 	      (when (and (eglot-managed-p) 
 			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'java-mode))
 		(eglot-format-buffer)))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
