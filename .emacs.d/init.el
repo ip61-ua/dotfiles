@@ -26,12 +26,15 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(auctex consult corfu dape dashboard docker doom-modeline doom-themes
-	    dotenv-mode eglot-java emmet-mode gitignore-templates
-	    golden-ratio js2-mode ligature magit marginalia
-	    markdown-mode multiple-cursors nerd-icons orderless
-	    plantuml-mode pyvenv smartparens somafm vertico web-mode
-	    yaml-mode yasnippet-snippets)))
+   '(add-node-modules-path auctex consult corfu dape dashboard docker
+			   doom-modeline doom-themes dotenv-mode
+			   eglot-java emmet-mode gitignore-templates
+			   golden-ratio js2-mode json-mode ligature
+			   magit marginalia markdown-mode
+			   multiple-cursors nerd-icons orderless
+			   plantuml-mode pug-mode pyvenv smartparens
+			   somafm vertico web-mode yaml-mode
+			   yasnippet-snippets)))
 
 
 ;;;; * Apparence
@@ -381,15 +384,6 @@
 
 
 ;;;; * Languges
-;;;; ** Web (HTML, CSS, JS)
-(use-package emmet-mode
-  :ensure t
-  :hook ((mhtml-mode . emmet-mode)
-         (css-mode . emmet-mode))
-  :config
-  (setq emmet-move-cursor-between-quotes t))
-
-
 ;;;; ** Enviroment files (.env)
 (use-package dotenv-mode
   :ensure t
@@ -401,6 +395,12 @@
 (use-package yaml-mode
   :ensure t
   :mode ("\\.ya?ml\\'" . yaml-mode))
+
+
+;;;; ** JSON
+(use-package json-mode
+  :ensure t
+  :hook (json-mode . eglot-ensure))
 
 
 ;;;; ** PlantUML
@@ -578,14 +578,46 @@
 (add-hook 'java-ts-mode-hook 'mi-java-config-jdtls)
 
 
-;;;; * lsp eglotters
-;;;; ** Languages
-;;;; *** Web
+;;;; * Web
 ;; This requieres run npm install -g vscode-langservers-extracted typescript typescript-language-server
+;;;; ** Web eglotters
 (add-hook 'mhtml-mode-hook 'eglot-ensure)
 (add-hook 'css-mode-hook 'eglot-ensure)
 (add-hook 'js-mode-hook 'eglot-ensure)
 
+
+;;;; ** Emmet
+(use-package emmet-mode
+  :ensure t
+  :hook ((mhtml-mode . emmet-mode)
+         (css-mode . emmet-mode))
+  :config
+  (setq emmet-move-cursor-between-quotes t))
+
+
+;;;; ** React + Typescript
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
+(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
+
+
+;;;; ** Templates
+;;;; *** Pug.js
+(use-package pug-mode
+  :ensure t
+  :mode "\\.pug\\'")
+
+
+;;;; ** Node.js 
+(use-package add-node-modules-path
+  :ensure t
+  :hook ((js-mode js-ts-mode typescript-ts-mode tsx-ts-mode) . add-node-modules-path))
+
+
+;;;; * lsp eglotters
+;;;; ** Languages
 (use-package eglot
   :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode) . eglot-ensure)
   :bind
