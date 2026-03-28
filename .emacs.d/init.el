@@ -408,6 +408,10 @@
   :mode ("\\.ya?ml\\'" . yaml-mode))
 
 
+;;;; ** Rust
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+
+
 ;;;; ** JSON
 (use-package json-mode
   :ensure t
@@ -610,8 +614,6 @@
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
-(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
-(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
 
 
 ;;;; ** Templates
@@ -630,7 +632,7 @@
 ;;;; * lsp eglotters
 ;;;; ** Languages
 (use-package eglot
-  :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode) . eglot-ensure)
+  :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode typescript-ts-mode tsx-ts-mode rust-ts-mode) . eglot-ensure)
   :bind
   ("C-c r" . eglot-rename)
   ("C-c c" . eglot-code-actions)
@@ -662,8 +664,9 @@
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (and (eglot-managed-p) 
-			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'java-mode))
+			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'java-mode 'rust-ts-mode))
 		(eglot-format-buffer)))))
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
