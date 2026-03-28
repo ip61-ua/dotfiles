@@ -26,15 +26,15 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(add-node-modules-path auctex consult corfu dape dashboard docker
-			   doom-modeline doom-themes dotenv-mode
-			   eglot-java emmet-mode gitignore-templates
-			   golden-ratio js2-mode json-mode ligature
-			   magit marginalia markdown-mode
-			   multiple-cursors nerd-icons orderless
-			   plantuml-mode pug-mode pyvenv smartparens
-			   somafm vertico web-mode yaml-mode
-			   yasnippet-snippets)))
+   '(add-node-modules-path auctex auto-dark consult corfu dape dashboard
+			   docker doom-modeline doom-themes
+			   dotenv-mode eglot-java emmet-mode
+			   gitignore-templates golden-ratio js2-mode
+			   json-mode ligature magit marginalia
+			   markdown-mode multiple-cursors nerd-icons
+			   orderless plantuml-mode pug-mode pyvenv
+			   smartparens somafm vertico web-mode
+			   yaml-mode yasnippet-snippets)))
 
 
 ;;;; * Apparence
@@ -44,7 +44,7 @@
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-tokyo-night t) ;; <- Configure theme here (https://melpa.org/#/doom-themes)
+  (load-theme 'doom-tokyo-night t) 
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config))
 
@@ -55,6 +55,17 @@
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
 (add-hook 'compilation-filter-hook 'color-compilation-buffer)
+
+
+;;;; ** Auto dark-light themes
+(use-package auto-dark
+  :ensure t
+  :custom
+  (auto-dark-themes '( ;; <- Configure theme here (https://melpa.org/#/doom-themes)
+		      (doom-tokyo-night)
+		      (doom-gruvbox-light)))
+  :config
+  (auto-dark-mode t))
 
 
 ;;;; ** Minibuffer aesthetics
