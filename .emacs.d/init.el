@@ -16,7 +16,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("d80952c58cf1b06d936b1392c38230b74ae1a2a6729594770762dc0779ac66b7"
+   '("b7a09eb77a1e9b98cafba8ef1bd58871f91958538f6671b22976ea38c2580755"
+     "d80952c58cf1b06d936b1392c38230b74ae1a2a6729594770762dc0779ac66b7"
      default))
  '(display-line-numbers-type 'relative)
  '(face-font-family-alternatives
@@ -30,10 +31,10 @@
 			   docker doom-modeline doom-themes
 			   dotenv-mode eglot-java emmet-mode
 			   gitignore-templates golden-ratio js2-mode
-			   json-mode ligature magit marginalia
-			   markdown-mode multiple-cursors nerd-icons
-			   orderless plantuml-mode pug-mode pyvenv
-			   smartparens somafm vertico web-mode
+			   json-mode kdl-mode ligature magit
+			   marginalia markdown-mode multiple-cursors
+			   nerd-icons orderless plantuml-mode pug-mode
+			   pyvenv smartparens somafm vertico web-mode
 			   yaml-mode yasnippet-snippets)))
 
 
@@ -412,6 +413,12 @@
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 
 
+;;;; ** KDL
+(use-package kdl-mode ;; cargo install kdl-lsp
+  :ensure t
+  :mode "\\.kdl\\'")
+
+
 ;;;; ** JSON
 (use-package json-mode
   :ensure t
@@ -674,3 +681,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'upcase-region 'disabled nil)

@@ -7,3 +7,4 @@
 !fix_bluetooth.sh
 !.emacs.d/snippets/
 !.emacs.d/snippets/**
+!.config/niri
