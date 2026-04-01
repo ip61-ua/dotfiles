@@ -1,6 +1,6 @@
 *
 !.gitignore
-
+!README.org
 !fix_bluetooth.sh
 
 !.emacs.d/
@@ -15,3 +15,5 @@
 !.config/niri/
 !.config/niri/**
 
+!.config/waybar/
+!.config/waybar/**
