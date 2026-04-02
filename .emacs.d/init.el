@@ -33,9 +33,10 @@
 			   gitignore-templates golden-ratio js2-mode
 			   json-mode kdl-mode ligature magit
 			   marginalia markdown-mode multiple-cursors
-			   nerd-icons orderless plantuml-mode pug-mode
-			   pyvenv smartparens somafm vertico web-mode
-			   yaml-mode yasnippet-snippets)))
+			   nerd-icons orderless org-modern
+			   plantuml-mode pug-mode pyvenv smartparens
+			   somafm vertico web-mode yaml-mode
+			   yasnippet-snippets)))
 
 
 ;;;; * Apparence
@@ -180,6 +181,21 @@
 (setq kept-new-versions 6)
 (setq kept-old-versions 2)
 (setq version-control t)
+
+
+;;;; * Agenda TODOs Org
+(use-package org
+  :ensure t
+  :bind (("C-c a" . org-agenda)
+         ("C-c c" . org-capture))
+  :config
+  (setq org-directory "~/org")
+  (setq org-agenda-files '("~/org/proyectos.org" "~/org/inbox.org")))
+
+(use-package org-modern
+  :ensure t
+  :hook (org-mode . org-modern-mode)
+  :hook (org-agenda-finalize . org-modern-agenda))
 
 
 ;;;; * General window and editor agnostics settings 
