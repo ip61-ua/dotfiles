@@ -184,13 +184,29 @@
 
 
 ;;;; * Agenda TODOs Org
+;; Auto-create org directory and essential files if they don't exist
+(let ((org-dir (expand-file-name "~/org")))
+  (unless (file-exists-p org-dir)
+    (make-directory org-dir t)
+    (message "Created org directory: %s" org-dir))
+  ;; Create inbox.org if missing
+  (let ((inbox-file (expand-file-name "inbox.org" org-dir)))
+    (unless (file-exists-p inbox-file)
+      (write-region "" nil inbox-file)
+      (message "Created %s" inbox-file)))
+  ;; Create proyects.org if missing
+  (let ((proyectos-file (expand-file-name "proyects.org" org-dir)))
+    (unless (file-exists-p proyectos-file)
+      (write-region "" nil proyectos-file)
+      (message "Created %s" proyectos-file))))
+
 (use-package org
   :ensure t
   :bind (("C-c a" . org-agenda)
          ("C-c c" . org-capture))
   :config
   (setq org-directory "~/org")
-  (setq org-agenda-files '("~/org/proyectos.org" "~/org/inbox.org")))
+  (setq org-agenda-files '("~/org/proyects.org" "~/org/inbox.org")))
 
 (use-package org-modern
   :ensure t
