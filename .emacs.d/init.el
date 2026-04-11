@@ -29,14 +29,14 @@
  '(package-selected-packages
    '(add-node-modules-path auctex auto-dark consult corfu dape dashboard
 			   docker doom-modeline doom-themes
-			   dotenv-mode eglot-java emmet-mode
+			   dotenv-mode eglot eglot-java emmet-mode
 			   gitignore-templates golden-ratio js2-mode
 			   json-mode kdl-mode ligature magit
 			   marginalia markdown-mode multiple-cursors
 			   nerd-icons orderless org-modern
-			   plantuml-mode pug-mode pyvenv smartparens
-			   somafm vertico web-mode yaml-mode
-			   yasnippet-snippets)))
+			   plantuml-mode pug-mode pyvenv skeletor
+			   smartparens somafm vertico web-mode
+			   yaml-mode yasnippet-snippets)))
 
 
 ;;;; * Apparence
@@ -212,6 +212,16 @@
   :ensure t
   :hook (org-mode . org-modern-mode)
   :hook (org-agenda-finalize . org-modern-agenda))
+
+
+;;;; * Project Scaffolding
+(use-package skeletor
+  :ensure t
+  :config
+  (setq skeletor-user-directory "~/.emacs.d/skeletons")
+  (setq-default skeletor-license nil)
+  (skeletor-define-template "cpp-make-gtest-eglot"
+			    :title "C++ (Make + GTest + Eglot)"))
 
 
 ;;;; * General window and editor agnostics settings 
