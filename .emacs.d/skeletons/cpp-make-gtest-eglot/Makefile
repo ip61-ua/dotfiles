@@ -9,6 +9,8 @@ SRCS = $(shell find src -name '*.cpp')
 TEST_SRCS = $(shell find tests -name '*.cpp')
 SRCS_NO_MAIN = $(filter-out src/main.cpp, $(SRCS))
 
+.PHONY: all build run test clean
+
 all: run
 
 build: $(SRCS)
