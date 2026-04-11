@@ -10,6 +10,9 @@
 !.emacs.d/snippets/
 !.emacs.d/snippets/**
 
+!.emacs.d/skeletons/
+!.emacs.d/skeletons/**
+
 !.config/
 .config/*
 !.config/niri/
