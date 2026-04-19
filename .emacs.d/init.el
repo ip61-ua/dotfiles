@@ -135,16 +135,18 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(defvar mi-font " Fira Code")
- 
+(setq mi-font "JetBrains Mono NL")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Adwaita Mono         ;; GNOME / Inter	   ;;
+;; Cascadia Code        ;; Microsoft		   ;;
 ;; Fira Code            ;; By tonsky		   ;;
 ;; SF Mono              ;; Apple (no liga support) ;;
 ;; JetBrains Mono NL    ;; JetBrains		   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (find-font (font-spec :name mi-font))
-  (set-face-attribute 'default nil :font mi-font :height 120))
+  (set-face-attribute 'default nil :font mi-font :height 110))
 
 
 ;;;; *** Ligatures
