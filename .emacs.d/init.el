@@ -245,6 +245,20 @@
 
 
 ;;;; * General window and editor agnostics settings 
+;;;; ** Language Check Ortografia
+(use-package flyspell
+  :ensure nil
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode))
+  :config
+  (setq ispell-program-name "hunspell")
+  (setq ispell-dictionary "es_ES")
+  (setq ispell-really-hunspell t)
+  (setq ispell-async-processp t)
+  
+  (keymap-global-set "C-c f" #'ispell-word))
+
+
 ;;;; ** Minibuffer ++
 (use-package vertico
   :ensure t
