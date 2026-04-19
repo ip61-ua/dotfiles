@@ -43,7 +43,7 @@
 			   marginalia markdown-mode multiple-cursors
 			   nerd-icons orderless org-modern
 			   plantuml-mode pug-mode pyvenv skeletor
-			   smartparens somafm vertico web-mode
+			   smartparens somafm vertico vterm web-mode
 			   yaml-mode yasnippet-snippets)))
 
 
@@ -90,6 +90,16 @@
   (doom-modeline-major-mode-color-icon t)
   (doom-modeline-buffer-state-icon t)
   (doom-modeline-buffer-modification-icon t))
+
+
+;;;; ** Scrollbar Nyancat
+;; (use-package nyan-mode
+;;   :ensure t
+;;   :config
+;;   (nyan-mode 1)
+;; 					; (setq nyan-animate-nyancat f)
+;; 					; (setq nyan-wavy-trail t)
+;;   )
 
 
 ;;;; ** Startup screen
@@ -445,6 +455,19 @@
   (corfu-popupinfo-delay 0.5))
 
 
+;;;; * Terminals Console
+(add-hook 'shell-mode-hook (lambda () (corfu-mode -1)))
+(add-hook 'eshell-mode-hook (lambda () (corfu-mode -1)))
+
+(use-package vterm
+  :ensure t
+  :config
+  (add-hook 'vterm-mode-hook (lambda ()
+                               (setq-local corfu-mode nil)
+                               (setq-local cursor-type 'bar)))
+  (setq vterm-max-scrollback 10000))
+
+
 ;;;; * Languges
 ;;;; ** Enviroment files (.env)
 (use-package dotenv-mode
@@ -732,3 +755,4 @@
  ;; If there is more than one, they won't work right.
  )
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
