@@ -44,7 +44,7 @@
 			   nerd-icons orderless org-modern
 			   plantuml-mode pug-mode pyvenv skeletor
 			   smartparens somafm vertico vterm web-mode
-			   yaml-mode yasnippet-snippets)))
+			   yaml-mode yasnippet-snippets yeetube)))
 
 
 ;;;; * Apparence
@@ -342,7 +342,8 @@
 (global-set-key (kbd "C-c s") 'shell)
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
-(global-set-key (kbd "C-c y") 'duplicate-line)
+;; (global-set-key (kbd "C-c y") 'duplicate-line)
+(global-set-key (kbd "C-S-d") 'duplicate-line)
 
 
 ;;;; ** Cheat sheet
@@ -382,13 +383,28 @@
   :bind ("C-c d" . docker))
 
 
-;;;; ** Music
+;;;; ** Music Vídeo Media Multimedia
 ;;;; *** Radio somafm
 (use-package somafm
   :ensure t
   :config
   (setq somafm-player-command "mpv"
         somafm-player-parameters '("--no-video")))
+
+
+;;;; *** YouTube (Yeetube)
+(use-package yeetube
+  :ensure t
+  :init (define-prefix-command 'mi/yeetube-map)
+  :bind (("C-c y" . 'mi/yeetube-map)
+          :map mi/yeetube-map
+          ("s" . 'yeetube-search)
+          ("b" . 'yeetube-play-saved-video)
+          ("d" . 'yeetube-download-videos)
+          ("p" . 'yeetube-mpv-toggle-pause)
+          ("v" . 'yeetube-mpv-toggle-video)
+          ("V" . 'yeetube-mpv-toggle-no-video-flag)
+          ("k" . 'yeetube-remove-saved-video)))
 
 
 ;;;; * Debugger
