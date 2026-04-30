@@ -44,7 +44,7 @@
 			   markdown-mode multiple-cursors nerd-icons
 			   orderless org-modern plantuml-mode pug-mode
 			   pyvenv skeletor smartparens somafm
-			   spring-boot vertico vterm web-mode
+			    vertico vterm web-mode
 			   yaml-mode yasnippet-snippets yeetube)))
 
 
