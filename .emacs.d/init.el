@@ -35,15 +35,16 @@
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
  '(package-selected-packages
-   '(add-node-modules-path auctex auto-dark consult corfu dape dashboard
-			   docker doom-modeline doom-themes
+   '(add-node-modules-path auctex auto-dark consult corfu dap-mode dape
+			   dashboard docker doom-modeline doom-themes
 			   dotenv-mode eglot eglot-java emmet-mode
 			   gitignore-templates golden-ratio js2-mode
-			   json-mode kdl-mode ligature magit
-			   marginalia markdown-mode multiple-cursors
-			   nerd-icons orderless org-modern
-			   plantuml-mode pug-mode pyvenv skeletor
-			   smartparens somafm vertico vterm web-mode
+			   json-mode kdl-mode ligature lsp-java
+			   lsp-mode lsp-ui magit marginalia
+			   markdown-mode multiple-cursors nerd-icons
+			   orderless org-modern plantuml-mode pug-mode
+			   pyvenv skeletor smartparens somafm
+			   spring-boot vertico vterm web-mode
 			   yaml-mode yasnippet-snippets yeetube)))
 
 
@@ -121,8 +122,8 @@
   
   (setq dashboard-banner-logo-title
 	(string-join
-	 (list "Добро пожаловать! Сегодня "
-	       (format-time-string "%A, %B %e."))))
+	 (list "Добро пожаловать, товарищ! Сегодня "
+	       (format-time-string "%A %e, %B."))))
   (setq dashboard-startup-banner 'official)
   (setq dashboard-center-content t)
   (setq dashboard-show-shortcuts t)
@@ -135,7 +136,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(setq mi-font "JetBrains Mono NL")
+(setq mi-font "JetBrains Mono")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -154,7 +155,7 @@
   :ensure t											   
   :config											   
   (global-ligature-mode t)									   
-  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"   ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="  "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"  "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"  "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"  "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~=" "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"  "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"  ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"  "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"  "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"  "?=" "?." "??" ";;;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)" "\\\\" "://" ";;" "<---" "<----" "<-----" "<------" "<-------" "<--------" "<---------" "<----------" "<-----------" "<------------" "<-------------" "<--------------")))
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"   ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="  "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"  "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"  "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"  "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~=" "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"  "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"  ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"  "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"  "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"  "?=" "?." "??" ";;;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)" "\\\\" "://" ";;" "<---" "<----" "<-----" "<------" "<-------" "<--------" "<---------" "<----------" "<-----------" "<------------" "<-------------" "<--------------" ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" ";;;;")))
 
 
 ;;;; *** Icons
@@ -584,114 +585,45 @@
 
 
 ;;;; ** Java
-;;;; *** Custom macros
-(defun mi-java-mvn-save-compile-test () 
-  "Custom function for Java programming that saves buffer contents, compiles tests and displays the results using maven test"
-  (interactive)
-  (save-some-buffers t)
-  (if-let ((proj (project-current)))
-      (let ((default-directory (project-root proj)))
-        (message "Maven started building...")
-        
-        (let ((exit-code (shell-command "mvn clean test")))
-          (if (= exit-code 0)
-              (progn
-                (message "Maven succeed!")
-                (call-interactively 'eglot-java-run-test))
-            (message "Maven failled! Check out *Shell Command Output*."))))
-    (error "Are you trolling me? No pom.xml found nor git.")))
-
-(defun mi-java-mvn-save-debug-test ()
-  "Custom function for Java programming that saves buffer contents, compiles tests and starts debugger for `mvn test`. Note that the debugger window appears once the timer has elapsed. Consider increasing the timer if tests take a while to compile (sync system)."
-  (interactive)
-  (save-some-buffers t)
-  (if-let ((proj (project-current)))
-      (let ((default-directory (project-root proj))
-            (java-buf (current-buffer)))
-        (when (get-buffer "*compilation*")
-          (let ((proc (get-buffer-process "*compilation*")))
-            (when proc (delete-process proc))))
-        (message "Maven started building and serving debug server...")
-        (compilation-start "mvn test -Dmaven.surefire.debug" 'compilation-mode)
-        (run-with-timer 5 nil
-                        (lambda ()
-                          (with-current-buffer java-buf
-                            (message "Attaching debugger at port 5005...")
-                            (let* ((base (alist-get 'jdtls dape-configs))
-                                   (config
-                                    (list 'modes  (plist-get base 'modes)
-                                          'ensure (plist-get base 'ensure)
-                                          'fn     (plist-get base 'fn)
-                                          :request  "attach"
-                                          :hostName "localhost"
-                                          :port     5005
-                                          :filePath (buffer-file-name java-buf))))
-                              (dape config))))))
-    (error "Are you trolling me? No pom.xml found nor git.")))
-
-
-;;;; *** Completion and shortcuts
-(use-package eglot-java
+;;;; *** LSP Mode Core
+(use-package lsp-mode
   :ensure t
-  :hook (java-mode . eglot-java-mode)
-  :init (require 'cc-mode)
-  :bind (:map java-mode-map
-              ("<f4>" . mi-java-mvn-save-compile-test)
-              ("<f5>" . mi-java-mvn-save-debug-test)))
+  :commands (lsp lsp-deferred)
+  :hook ((java-mode . lsp-deferred)
+         (java-ts-mode . lsp-deferred))
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :bind (:map lsp-mode-map
+              ("C-c c" . lsp-execute-code-action)
+              ("C-c r" . lsp-rename)
+	      ;("C-c j s" . lsp-java-spring-initializr)
+	      )
+  :custom
+  (lsp-headerline-breadcrumb-enable nil)
+  :config
+  (lsp-enable-which-key-integration t))
+
+;;;; *** LSP UI
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
 
 
-;;;; *** Maven multi-module & Project integration
-(with-eval-after-load 'project
-  (add-to-list 'project-vc-extra-root-markers "pom.xml")
-  (add-to-list 'project-vc-extra-root-markers ".project"))
+;;;; *** LSP Java Server
+(use-package lsp-java
+  :ensure t)
 
-;;;; *** Debug integration (dape)
-(defvar mi-java-debug-plugin-dir (expand-file-name "java-debug/" user-emacs-directory))
-(defvar mi-java-debug-plugin-xml "https://repo1.maven.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/maven-metadata.xml")
-(defvar mi-java-debug-plugin-url-fmt "https://repo1.maven.org/maven2/com/microsoft/java/com.microsoft.java.debug.plugin/%s/%s")
-(defvar mi-java-debug-plugin-jar-fmt "com.microsoft.java.debug.plugin-%s.jar")
 
-(defun mi-java-update-debugger ()
-  "Fetch && downloads automatically latest version of the debugger from Maven Central."
-  (interactive)
-  (unless (file-exists-p mi-java-debug-plugin-dir)
-    (make-directory mi-java-debug-plugin-dir t))
-  
-  (message "Fetching debugger plugin from Maven Central...")
-  (let* ((metadata-url mi-java-debug-plugin-xml) 
-         (buffer (url-retrieve-synchronously metadata-url))
-         version)
-    (with-current-buffer buffer
-      (goto-char (point-min))
-      (when (re-search-forward "<release>\\(.*?\\)</release>" nil t)
-        (setq version (match-string 1)))
-      (kill-buffer))
-    
-    (if version
-        (let* ((jar-name (format  mi-java-debug-plugin-jar-fmt version))
-               (jar-url (format mi-java-debug-plugin-url-fmt version jar-name))
-               (jar-dest (expand-file-name jar-name mi-java-debug-plugin-dir)))
-          
-          (if (file-exists-p jar-dest)
-              (message "Debugger plugin (%s) installed." version)
-	    
-            (dolist (f (directory-files mi-java-debug-plugin-dir t "\\.jar$"))
-              (delete-file f))
-            (message "Downloading version %s..." version)
-            (url-copy-file jar-url jar-dest t)
-            (message "Debugger plugin (%s) installed." version)))
-      (error "Unable to retrive from Maven Central."))))
-
-(defun mi-java-debug-plugin-setup (server eglot-java-eclipse-jdt)
-  "Injects debugger .jar's in JDTLS reading local directory."
-  (let ((jars (when (file-exists-p mi-java-debug-plugin-dir)
-                (directory-files mi-java-debug-plugin-dir t "\\.jar$"))))
-    (if jars
-        `(:bundles [,(car jars)])
-      (message "No debugger found. Run M-x mi-java-update-debugger")
-      nil)))
-
-(setq eglot-java-user-init-opts-fn 'mi-java-debug-plugin-setup)
+;;;; *** DAP Mode Debugger
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-auto-configure-mode)
+  (require 'dap-java)
+  ;; Atajos para ejecutar y depurar tests individuales o clases sin macros manuales
+  (global-set-key (kbd "<f4>") 'dap-java-run-test-method)
+  (global-set-key (kbd "<f5>") 'dap-java-debug-test-method))
 
 
 ;;;; *** Format and style
@@ -704,6 +636,11 @@
 
 (add-hook 'java-mode-hook 'mi-java-config-jdtls)
 (add-hook 'java-ts-mode-hook 'mi-java-config-jdtls)
+
+;;;; *** Maven multi-module & Project integration
+(with-eval-after-load 'project
+  (add-to-list 'project-vc-extra-root-markers "pom.xml")
+  (add-to-list 'project-vc-extra-root-markers ".project"))
 
 
 ;;;; * Web
@@ -777,7 +714,7 @@
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (and (eglot-managed-p) 
-			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'java-mode 'rust-ts-mode))
+			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'rust-ts-mode))
 		(eglot-format-buffer)))))
 
 
