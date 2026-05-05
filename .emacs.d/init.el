@@ -122,7 +122,7 @@
   
   (setq dashboard-banner-logo-title
 	(string-join
-	 (list "Добро пожаловать, товарищ! Сегодня "
+	 (list "Добро пожаловать, гигачад! Сегодня "
 	       (format-time-string "%A %e, %B."))))
   (setq dashboard-startup-banner 'official)
   (setq dashboard-center-content t)
@@ -596,12 +596,15 @@
   :bind (:map lsp-mode-map
               ("C-c c" . lsp-execute-code-action)
               ("C-c r" . lsp-rename)
-	      ;("C-c j s" . lsp-java-spring-initializr)
+	      ("C-c f" . lsp-format-buffer)
+	      
+					;("C-c j s" . lsp-java-spring-initializr)
 	      )
   :custom
   (lsp-headerline-breadcrumb-enable nil)
   :config
   (lsp-enable-which-key-integration t))
+
 
 ;;;; *** LSP UI
 (use-package lsp-ui
@@ -614,6 +617,49 @@
   :ensure t)
 
 
+;;;; *** LSP Performance Tuning
+(setq gc-cons-threshold (* 200 1024 1024))
+(setq read-process-output-max (* 10 1024 1024))
+(setq lsp-idle-delay 0.500)
+(setq lsp-log-io nil)
+
+
+;;;; *** Lombok support (from https://github.com/sei40kr/lsp-java-lombok)
+(defgroup lsp-java-lombok nil
+  "Lombok for Java LSP"
+  :prefix "lsp-java-lombok-"
+  :group 'languages)
+
+(defcustom lsp-java-lombok-jar-path 
+  (expand-file-name "lombok.jar" 
+                    (expand-file-name ".cache" user-emacs-directory))
+  "The location of the Lombok JAR."
+  :group 'lsp-java-lombok
+  :risky t
+  :type 'file)
+
+(defun lsp-java-lombok-download ()
+  (interactive)
+  (if (and (y-or-n-p (format "Download the latest Lombok JAR into %s? "
+                             lsp-java-lombok-jar-path))
+           (or (not (file-exists-p lsp-java-lombok-jar-path))
+               (y-or-n-p (format "The Lombok JAR already exists at %s, overwrite? "
+                                 lsp-java-lombok-jar-path))))
+      (progn
+        (mkdir (file-name-directory lsp-java-lombok-jar-path) t)
+        (message "Downloading Lombok JAR into %s" lsp-java-lombok-jar-path)
+        (url-copy-file "https://projectlombok.org/downloads/lombok.jar" lsp-java-lombok-jar-path t))
+    (message "Aborted.")))
+
+(defun lsp-java-lombok ()
+  (setq lsp-java-vmargs
+        (append lsp-java-vmargs
+                (list (concat "-javaagent:" lsp-java-lombok-jar-path)
+                      (concat "-Xbootclasspath/a:" lsp-java-lombok-jar-path)))))
+
+(lsp-java-lombok)
+
+
 ;;;; *** DAP Mode Debugger
 (use-package dap-mode
   :ensure t
@@ -622,20 +668,9 @@
   (dap-auto-configure-mode)
   (require 'dap-java)
   ;; Atajos para ejecutar y depurar tests individuales o clases sin macros manuales
-  (global-set-key (kbd "<f4>") 'dap-java-run-test-method)
-  (global-set-key (kbd "<f5>") 'dap-java-debug-test-method))
+  (global-set-key (kbd "<f4>") 'dap-java-run-test-class)
+  (global-set-key (kbd "<f5>") 'dap-java-debug-test-class))
 
-
-;;;; *** Format and style
-(defun mi-java-config-jdtls ()
-  (setq c-basic-offset 4)
-  (setq java-ts-mode-indent-offset 4)
-  (setq tab-width 4)
-  (setq indent-tabs-mode nil)
-  (local-set-key (kbd "RET") 'newline-and-indent))
-
-(add-hook 'java-mode-hook 'mi-java-config-jdtls)
-(add-hook 'java-ts-mode-hook 'mi-java-config-jdtls)
 
 ;;;; *** Maven multi-module & Project integration
 (with-eval-after-load 'project
