@@ -16,7 +16,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
+   '("4594d6b9753691142f02e67b8eb0fda7d12f6cc9f1299a49b819312d6addad1d"
+     "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
      "fffef514346b2a43900e1c7ea2bc7d84cbdd4aa66c1b51946aade4b8d343b55a"
      "19d62171e83f2d4d6f7c31fc0a6f437e8cec4543234f0548bad5d49be8e344cd"
      "4d5d11bfef87416d85673947e3ca3d3d5d985ad57b02a7bb2e32beaf785a100e"
@@ -43,9 +44,9 @@
 			   lsp-mode lsp-ui magit marginalia
 			   markdown-mode multiple-cursors nerd-icons
 			   orderless org-modern plantuml-mode pug-mode
-			   pyvenv skeletor smartparens somafm
-			    vertico vterm web-mode
-			   yaml-mode yasnippet-snippets yeetube)))
+			   pyvenv skeletor smartparens somafm vertico
+			   vterm web-mode yaml-mode yasnippet-snippets
+			   yeetube)))
 
 
 ;;;; * Apparence
@@ -136,7 +137,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(setq mi-font "JetBrains Mono")
+(setq mi-font "JetBrains Mono NL")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -361,6 +362,7 @@
 (global-set-key (kbd "<f5>") 'recompile)
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 ;; (global-set-key (kbd "C-c y") 'duplicate-line)
+(global-set-key (kbd "C-S-o") 'find-file-at-point)
 (global-set-key (kbd "C-S-d") 'duplicate-line)
 
 
