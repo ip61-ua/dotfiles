@@ -43,10 +43,10 @@
 			   json-mode kdl-mode ligature lsp-java
 			   lsp-mode lsp-ui magit marginalia
 			   markdown-mode multiple-cursors nerd-icons
-			   orderless org-modern plantuml-mode pug-mode
-			   pyvenv skeletor smartparens somafm vertico
-			   vterm web-mode yaml-mode yasnippet-snippets
-			   yeetube)))
+			   orderless org-modern pdf-tools
+			   plantuml-mode pug-mode pyvenv skeletor
+			   smartparens somafm vertico vterm web-mode
+			   yaml-mode yasnippet-snippets yeetube)))
 
 
 ;;;; * Apparence
@@ -581,9 +581,31 @@
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
-  (setq-default TeX-master nil)  
+  (setq-default TeX-engine 'luatex)  
+  (setq-default TeX-master "main.tex")  
+  
   (setq TeX-PDF-mode t)
-  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode))
+
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq TeX-source-correlate-start-server t)
+  (setq reftex-plug-into-AUCTeX t)
+
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer))
+
+
+;;;; ** PDF-Tools pdf viwer
+(use-package pdf-tools
+  :ensure t
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-page) 
+  (define-key pdf-view-mode-map (kbd "g") 'pdf-view-revert-buffer) 
+  (setq pdf-view-use-scaling t
+        pdf-view-use-imagemagick nil))
 
 
 ;;;; ** Java
