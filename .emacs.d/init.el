@@ -413,6 +413,13 @@
 
 
 ;;;; *** YouTube (Yeetube)
+(defun mi-yeetube-loop-infinite-video ()
+  "Toggle Infinite loop mpv."
+  (interactive)
+  (yeetube-mpv-send-keypress "L")
+  (message "yeetube: toggle loop"))
+
+
 (use-package yeetube
   :ensure t
   :init (define-prefix-command 'mi/yeetube-map)
@@ -424,7 +431,10 @@
           ("p" . 'yeetube-mpv-toggle-pause)
           ("v" . 'yeetube-mpv-toggle-video)
           ("V" . 'yeetube-mpv-toggle-no-video-flag)
-          ("k" . 'yeetube-remove-saved-video)))
+          ("k" . 'yeetube-remove-saved-video)
+          ("r" . 'yeetube-replay)
+	  ("L" . 'mi-yeetube-loop-infinite-video)))
+
 
 
 ;;;; * Debugger
@@ -605,7 +615,8 @@
   (setq-default pdf-view-display-size 'fit-page) 
   (define-key pdf-view-mode-map (kbd "g") 'pdf-view-revert-buffer) 
   (setq pdf-view-use-scaling t
-        pdf-view-use-imagemagick nil))
+        pdf-view-use-imagemagick nil)
+  (add-hook 'pdf-view-mode-hook (lambda () (display-line-numbers-mode -1))))
 
 
 ;;;; ** Java
@@ -765,8 +776,8 @@
 
   
   ;;;; *** Tex 
-  (add-to-list 'eglot-server-programs
-               '((latex-mode LaTeX-mode tex-mode) . ("texlab")))
+  ;;(add-to-list 'eglot-server-programs
+  ;;             '((latex-mode LaTeX-mode tex-mode) . ("texlab")))
 
   
   ;;;; ** Format on save 
