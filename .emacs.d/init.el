@@ -117,9 +117,10 @@
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((recents   . 4)
                           (projects  . 4)
-                          (bookmarks . 4)
-			  (agenda    . 4)
-			  (registers . 4)))
+                          ;;(bookmarks . 4)
+			  ;;(agenda    . 4)
+			  ;;(registers . 4)
+			  ))
   
   (setq dashboard-banner-logo-title
 	(string-join
@@ -148,7 +149,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (find-font (font-spec :name mi-font))
-  (set-face-attribute 'default nil :font mi-font :height 110))
+  (set-face-attribute 'default nil :font mi-font :height 105))
 
 
 ;;;; *** Ligatures
@@ -436,7 +437,6 @@
 	  ("L" . 'mi-yeetube-loop-infinite-video)))
 
 
-
 ;;;; * Debugger
 ;;;; ** gdb
 (setq gdb-many-windows t)
@@ -593,13 +593,16 @@
   (setq TeX-parse-self t)
   (setq-default TeX-engine 'luatex)  
   (setq-default TeX-master "main.tex")  
+  (setq-default TeX-command-extra-options "--shell-escape")
   
   (setq TeX-PDF-mode t)
 
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
   (setq TeX-source-correlate-start-server t)
+  (setq TeX-open-quote "\"")
+  (setq TeX-close-quote "\"")
   (setq reftex-plug-into-AUCTeX t)
-
+  
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
