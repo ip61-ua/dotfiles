@@ -9,6 +9,10 @@
 
 
 ;;;; * Emacs own thing
+(setq read-process-output-max (* 1024 1024))
+(setq gc-cons-threshold (* 200 1024 1024))
+
+
 ;;  '(custom-enabled-themes '(leuven-dark))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -35,18 +39,7 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages
-   '(add-node-modules-path auctex auto-dark consult corfu dap-mode dape
-			   dashboard docker doom-modeline doom-themes
-			   dotenv-mode eglot eglot-java emmet-mode
-			   gitignore-templates golden-ratio js2-mode
-			   json-mode kdl-mode ligature lsp-java
-			   lsp-mode lsp-ui magit marginalia
-			   markdown-mode multiple-cursors nerd-icons
-			   orderless org-modern pdf-tools
-			   plantuml-mode pug-mode pyvenv skeletor
-			   smartparens somafm vertico vterm web-mode
-			   yaml-mode yasnippet-snippets yeetube)))
+ '(package-selected-packages nil))
 
 
 ;;;; * Apparence
@@ -166,6 +159,22 @@
   :config
   (unless (member "Symbols Nerd Font Mono" (font-family-list))
     (nerd-icons-install-fonts t)))
+
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :init
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode 1))
+
+(use-package nerd-icons-dired
+  :ensure t
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 
 ;;;; ** User Interface
@@ -420,7 +429,6 @@
   (yeetube-mpv-send-keypress "L")
   (message "yeetube: toggle loop"))
 
-
 (use-package yeetube
   :ensure t
   :init (define-prefix-command 'mi/yeetube-map)
@@ -431,7 +439,7 @@
           ("d" . 'yeetube-download-videos)
           ("p" . 'yeetube-mpv-toggle-pause)
           ("v" . 'yeetube-mpv-toggle-video)
-          ("V" . 'yeetube-mpv-toggle-no-video-flag)
+          ("V" . 'yeetube-mode-map--toggle-yeetube-mpv-no-video)
           ("k" . 'yeetube-remove-saved-video)
           ("r" . 'yeetube-replay)
 	  ("L" . 'mi-yeetube-loop-infinite-video)))
@@ -481,8 +489,8 @@
   (corfu-auto t)
   (corfu-quit-no-match 'separator)
   (corfu-cycle t)
-  (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.1)
+  (corfu-auto-prefix 3)
+  (corfu-auto-delay 0.3)
   :init
   (global-corfu-mode)
   :config
@@ -532,10 +540,12 @@
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 
 
-;;;; ** KDL
-(use-package kdl-mode ;; cargo install kdl-lsp
-  :ensure t
-  :mode "\\.kdl\\'")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;; ** KDL					  ;;
+;; (use-package kdl-mode ;; cargo install kdl-lsp ;;
+;;   :ensure t					  ;;
+;;   :mode "\\.kdl\\'")				  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;; ** JSON
@@ -623,97 +633,40 @@
 
 
 ;;;; ** Java
-;;;; *** LSP Mode Core
-(use-package lsp-mode
+(use-package eglot-java
   :ensure t
-  :commands (lsp lsp-deferred)
-  :hook ((java-mode . lsp-deferred)
-         (java-ts-mode . lsp-deferred))
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :bind (:map lsp-mode-map
-              ("C-c c" . lsp-execute-code-action)
-              ("C-c r" . lsp-rename)
-	      ("C-c f" . lsp-format-buffer)
-	      
-					;("C-c j s" . lsp-java-spring-initializr)
-	      )
-  :custom
-  (lsp-headerline-breadcrumb-enable nil)
+  :hook ((java-mode . eglot-java-mode)
+         (java-ts-mode . eglot-java-mode))
   :config
-  (lsp-enable-which-key-integration t))
+  (setq eglot-java-eclipse-jdt-args
+        `("-XX:+UseParallelGC"
+          "-XX:GCTimeRatio=4"
+          "-XX:AdaptiveSizePolicyWeight=90"
+          "-Dsun.zip.disableMemoryMapping=true"
+          "-Xmx4G"
+          "-Xms1G"
+          ;; ,(concat "-javaagent:" (expand-file-name "~/.emacs.d/.cache/lombok.jar"))
+          )))
 
 
-;;;; *** LSP UI
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode)
+;;;; *** Java style format
+(defun mi-format-java-simple ()
+  "Ajusta los espacios y tabulaciones nativas que leerá Eglot."
+  (setq-local tab-width 4)
+  (setq-local c-basic-offset 4)
+  (setq-local indent-tabs-mode nil))
 
-
-;;;; *** LSP Java Server
-(use-package lsp-java
-  :ensure t)
-
-
-;;;; *** LSP Performance Tuning
-(setq gc-cons-threshold (* 200 1024 1024))
-(setq read-process-output-max (* 10 1024 1024))
-(setq lsp-idle-delay 0.500)
-(setq lsp-log-io nil)
-
-
-;;;; *** Lombok support (from https://github.com/sei40kr/lsp-java-lombok)
-(defgroup lsp-java-lombok nil
-  "Lombok for Java LSP"
-  :prefix "lsp-java-lombok-"
-  :group 'languages)
-
-(defcustom lsp-java-lombok-jar-path 
-  (expand-file-name "lombok.jar" 
-                    (expand-file-name ".cache" user-emacs-directory))
-  "The location of the Lombok JAR."
-  :group 'lsp-java-lombok
-  :risky t
-  :type 'file)
-
-(defun lsp-java-lombok-download ()
-  (interactive)
-  (if (and (y-or-n-p (format "Download the latest Lombok JAR into %s? "
-                             lsp-java-lombok-jar-path))
-           (or (not (file-exists-p lsp-java-lombok-jar-path))
-               (y-or-n-p (format "The Lombok JAR already exists at %s, overwrite? "
-                                 lsp-java-lombok-jar-path))))
-      (progn
-        (mkdir (file-name-directory lsp-java-lombok-jar-path) t)
-        (message "Downloading Lombok JAR into %s" lsp-java-lombok-jar-path)
-        (url-copy-file "https://projectlombok.org/downloads/lombok.jar" lsp-java-lombok-jar-path t))
-    (message "Aborted.")))
-
-(defun lsp-java-lombok ()
-  (setq lsp-java-vmargs
-        (append lsp-java-vmargs
-                (list (concat "-javaagent:" lsp-java-lombok-jar-path)
-                      (concat "-Xbootclasspath/a:" lsp-java-lombok-jar-path)))))
-
-(lsp-java-lombok)
-
-
-;;;; *** DAP Mode Debugger
-(use-package dap-mode
-  :ensure t
-  :after lsp-mode
-  :config
-  (dap-auto-configure-mode)
-  (require 'dap-java)
-  ;; Atajos para ejecutar y depurar tests individuales o clases sin macros manuales
-  (global-set-key (kbd "<f4>") 'dap-java-run-test-class)
-  (global-set-key (kbd "<f5>") 'dap-java-debug-test-class))
+(add-hook 'java-mode-hook 'mi-format-java-simple)
+(add-hook 'java-ts-mode-hook 'mi-format-java-simple)
 
 
 ;;;; *** Maven multi-module & Project integration
 (with-eval-after-load 'project
   (add-to-list 'project-vc-extra-root-markers "pom.xml")
-  (add-to-list 'project-vc-extra-root-markers ".project"))
+  (add-to-list 'project-vc-extra-root-markers ".project")
+  (add-to-list 'vc-directory-exclusion-list "target")
+  (add-to-list 'vc-directory-exclusion-list "build")
+  (add-to-list 'vc-directory-exclusion-list ".bin"))
 
 
 ;;;; * Web
@@ -787,7 +740,7 @@
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (and (eglot-managed-p) 
-			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'rust-ts-mode))
+			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'rust-ts-mode 'java-mode 'java-ts-mode))
 		(eglot-format-buffer)))))
 
 
