@@ -254,8 +254,11 @@
   :config
   (setq skeletor-user-directory "~/.emacs.d/skeletons")
   (setq-default skeletor-license nil)
-  (skeletor-define-template "cpp-make-gtest-eglot"
-			    :title "C++ (Make + GTest + Eglot)"))
+  (skeletor-define-template "cpp-make-gtest-eglot" :title "C++ (Make + GTest + Eglot)")
+  (skeletor-define-template "java-complete" :title "Java Complete Learning Stack (Selenium, DbUnit, JaCoCo)")
+
+
+  )
 
 
 ;;;; * General window and editor agnostics settings 
