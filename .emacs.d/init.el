@@ -50,8 +50,8 @@
 		markdown-mode move-dup multiple-cursors
 		nerd-icons-completion nerd-icons-corfu
 		nerd-icons-dired orderless org-modern pdf-tools
-		plantuml-mode pug-mode pyvenv skeletor smartparens
-		somafm vertico vterm web-mode yaml-mode
+		persp-mode plantuml-mode pug-mode pyvenv skeletor
+		smartparens somafm vertico vterm web-mode yaml-mode
 		yasnippet-snippets yeetube))
  '(safe-local-variable-values
    '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
@@ -248,77 +248,26 @@
 
 
 ;;;; * Session Management (Workspaces)
-(require 'desktop)
-(require 'seq)
+(use-package persp-mode
+  :ensure t
+  :init
+  (setq persp-keymap-prefix (kbd "C-c S")) 
+  :config
+  (setq persp-save-dir (expand-file-name "workspaces/" mi-temporal-cache-dir)
+        persp-auto-save-fname "autosave"
+        persp-auto-save-opt 1          ;; Do not ask for saving latest
+        persp-nil-name "Dashboard"     ;; Initial session
+        persp-set-placement-from-window-asignment t)
 
-;;;; ** Directory base for session management workspace
-(defvar mi-sessions-dir (expand-file-name "sessions/" mi-temporal-cache-dir))
-(unless (file-exists-p mi-sessions-dir)
-  (make-directory mi-sessions-dir t))
+  (unless (file-exists-p persp-save-dir)
+    (make-directory persp-save-dir t))
 
-;;;; ** Directory for latest session workspace
-(defvar mi-session-default-dir (expand-file-name "default/" mi-sessions-dir))
-(unless (file-exists-p mi-session-default-dir)
-  (make-directory mi-session-default-dir t))
+  (persp-mode 1)
 
-;;;; ** Configuration workspace session
-(setq desktop-save nil)               ;; Do not autosave
-(setq desktop-load-locked-desktop t)  ;; Skip prompts 
-(setq desktop-restore-frames nil)     ;; Avoid Wayland/X11 window resize
-
-;;;; ** Functions workspace session
-(defun mi/session-save-last ()
-  "Saves session workspace silently when quitting."
-  (desktop-save mi-session-default-dir t))
-(add-hook 'kill-emacs-hook #'mi/session-save-last)
-
-(defun mi/session-restore-last ()
-  "Restores latest saved session workspace."
-  (interactive)
-  (if (file-exists-p (expand-file-name desktop-base-file-name mi-session-default-dir))
-      (progn
-        (desktop-read mi-session-default-dir)
-        (message "Latest session restored successfully!"))
-    (message "No sessions saved!")))
-
-(defun mi/session-save-custom (name)
-  "Saves/Overwrite custom session workspace."
-  (interactive (list (read-string "Session: ")))
-  (let ((dir (expand-file-name name mi-sessions-dir)))
-    (unless (file-exists-p dir)
-      (make-directory dir t))
-    (desktop-save dir t)
-    (message "Session '%s' saved successfully!." name)))
-
-(defun mi/session-load-custom ()
-  "Display a list of sessions to load."
-  (interactive)
-  (let* ((sessions (seq-remove (lambda (f) (string-equal f "default"))
-                               (directory-files mi-sessions-dir nil "^[^.]")))
-         (name (completing-read "Load session: " sessions))
-         (dir (expand-file-name name mi-sessions-dir)))
-    (when (file-exists-p dir)
-      (desktop-read dir)
-      (message "Session '%s' loaded!" name))))
-
-(defun mi/session-delete-custom ()
-  "Display a list of sessions to remove."
-  (interactive)
-  (let* ((sessions (seq-remove (lambda (f) (string-equal f "default"))
-                               (directory-files mi-sessions-dir nil "^[^.]")))
-         (name (completing-read "Delete session: " sessions))
-         (dir (expand-file-name name mi-sessions-dir)))
-    (when (yes-or-no-p (format "Are you sure to DESTROY session '%s'? " name))
-      (delete-directory dir t)
-      (message "Session '%s' deleted!" name))))
-
-;;;; ** Keymap shortcuts map session workspace manegement
-(defvar mi/session-map (make-sparse-keymap))
-(define-key mi/session-map (kbd "r") #'mi/session-restore-last)
-(define-key mi/session-map (kbd "s") #'mi/session-save-custom)
-(define-key mi/session-map (kbd "l") #'mi/session-load-custom)
-(define-key mi/session-map (kbd "d") #'mi/session-delete-custom)
-(global-set-key (kbd "C-c S") mi/session-map)
+  (with-eval-after-load 'consult
+    (with-eval-after-load 'persp-mode
+      (setq persp-add-buffer-on-after-change-major-mode t)
+      (add-to-list 'consult-buffer-filter "\\`\\*persp-"))))
 
 
 ;;;; * Agenda TODOs Org
@@ -581,18 +530,13 @@
   :ensure t
   :config
   (setq somafm-player-command "mpv"
-        somafm-player-parameters '("--no-video"))
-  (setq somafm-display-in-modeline 'f)
-
-  (if (fboundp 'somafm-mode-line-mode)
-      (somafm-mode-line-mode -1))
-
-  :bind(("C-c Y" . 'mi/somafm-map)
-        :map mi/somafm-map
-	("s" . somafm-by-completion)
-	("f" . somafm-add-current-song-to-favorites)
-	("c" . somafm-current-song)
-	("p" . somafm--stop)))
+        somafm-player-parameters '("--no-video")
+	somafm-display-in-modeline nil)
+  
+  :bind ("C-c Y s" . somafm-by-completion)
+        ("C-c Y f" . somafm-add-current-song-to-favorites)
+        ("C-c Y c" . somafm-current-song)
+        ("C-c Y p" . somafm--stop))
 
 
 ;;;; *** YouTube (Yeetube)
@@ -662,8 +606,8 @@
   (corfu-auto t)
   (corfu-quit-no-match 'separator)
   (corfu-cycle t)
-  (corfu-auto-prefix 3)
-  (corfu-auto-delay 0.3)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.2)
   :init
   (global-corfu-mode)
   :config
