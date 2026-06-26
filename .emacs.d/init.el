@@ -41,7 +41,34 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(ace-window add-node-modules-path auctex auto-dark consult corfu dape
+		dashboard docker doom-modeline doom-themes dotenv-mode
+		eglot-java emmet-mode exec-path-from-shell
+		expand-region gitignore-templates golden-ratio
+		js2-mode json-mode kdl-mode ligature magit marginalia
+		markdown-mode move-dup multiple-cursors
+		nerd-icons-completion nerd-icons-corfu
+		nerd-icons-dired orderless org-modern pdf-tools
+		plantuml-mode pug-mode pyvenv skeletor smartparens
+		somafm vertico vterm web-mode yaml-mode
+		yasnippet-snippets yeetube))
+ '(safe-local-variable-values
+   '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
+     (eval shell-command "plantuml -tsvg *.puml")
+     (eval add-hook 'TeX-before-compilation-hook
+	   (lambda nil (shell-command "plantuml -tsvg *.puml")) nil t)))
+ '(smtpmail-smtp-server "aitana.cpd.ua.es")
+ '(smtpmail-smtp-service 25))
+
+
+;;;; * Wayland inherit enviromental variables from real terminal thing
+(unless (package-installed-p 'exec-path-from-shell)
+  (package-refresh-contents)
+  (package-install 'exec-path-from-shell))
+
+(when (memq window-system '(x pgtk ns))
+  (exec-path-from-shell-initialize))
 
 
 ;;;; * Apparence
@@ -62,6 +89,7 @@
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
 (add-hook 'compilation-filter-hook 'color-compilation-buffer)
+(add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
 
 
 ;;;; ** Auto dark-light themes
@@ -133,7 +161,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(setq mi-font "JetBrains Mono NL")
+(setq mi-font "Fira Code")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -141,10 +169,12 @@
 ;; Fira Code            ;; By tonsky		   ;;
 ;; SF Mono              ;; Apple (no liga support) ;;
 ;; JetBrains Mono NL    ;; JetBrains		   ;;
+;; TerminalVector       ;; Windows 7/BIOS          ;;
+;; IBM Plex Mono        ;; IBM                     ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (find-font (font-spec :name mi-font))
-  (set-face-attribute 'default nil :font mi-font :height 105))
+  (set-face-attribute 'default nil :font mi-font :height 100))
 
 
 ;;;; *** Ligatures
@@ -217,6 +247,80 @@
 (setq version-control t)
 
 
+;;;; * Session Management (Workspaces)
+(require 'desktop)
+(require 'seq)
+
+;;;; ** Directory base for session management workspace
+(defvar mi-sessions-dir (expand-file-name "sessions/" mi-temporal-cache-dir))
+(unless (file-exists-p mi-sessions-dir)
+  (make-directory mi-sessions-dir t))
+
+;;;; ** Directory for latest session workspace
+(defvar mi-session-default-dir (expand-file-name "default/" mi-sessions-dir))
+(unless (file-exists-p mi-session-default-dir)
+  (make-directory mi-session-default-dir t))
+
+;;;; ** Configuration workspace session
+(setq desktop-save nil)               ;; Do not autosave
+(setq desktop-load-locked-desktop t)  ;; Skip prompts 
+(setq desktop-restore-frames nil)     ;; Avoid Wayland/X11 window resize
+
+;;;; ** Functions workspace session
+(defun mi/session-save-last ()
+  "Saves session workspace silently when quitting."
+  (desktop-save mi-session-default-dir t))
+(add-hook 'kill-emacs-hook #'mi/session-save-last)
+
+(defun mi/session-restore-last ()
+  "Restores latest saved session workspace."
+  (interactive)
+  (if (file-exists-p (expand-file-name desktop-base-file-name mi-session-default-dir))
+      (progn
+        (desktop-read mi-session-default-dir)
+        (message "Latest session restored successfully!"))
+    (message "No sessions saved!")))
+
+(defun mi/session-save-custom (name)
+  "Saves/Overwrite custom session workspace."
+  (interactive (list (read-string "Session: ")))
+  (let ((dir (expand-file-name name mi-sessions-dir)))
+    (unless (file-exists-p dir)
+      (make-directory dir t))
+    (desktop-save dir t)
+    (message "Session '%s' saved successfully!." name)))
+
+(defun mi/session-load-custom ()
+  "Display a list of sessions to load."
+  (interactive)
+  (let* ((sessions (seq-remove (lambda (f) (string-equal f "default"))
+                               (directory-files mi-sessions-dir nil "^[^.]")))
+         (name (completing-read "Load session: " sessions))
+         (dir (expand-file-name name mi-sessions-dir)))
+    (when (file-exists-p dir)
+      (desktop-read dir)
+      (message "Session '%s' loaded!" name))))
+
+(defun mi/session-delete-custom ()
+  "Display a list of sessions to remove."
+  (interactive)
+  (let* ((sessions (seq-remove (lambda (f) (string-equal f "default"))
+                               (directory-files mi-sessions-dir nil "^[^.]")))
+         (name (completing-read "Delete session: " sessions))
+         (dir (expand-file-name name mi-sessions-dir)))
+    (when (yes-or-no-p (format "Are you sure to DESTROY session '%s'? " name))
+      (delete-directory dir t)
+      (message "Session '%s' deleted!" name))))
+
+;;;; ** Keymap shortcuts map session workspace manegement
+(defvar mi/session-map (make-sparse-keymap))
+(define-key mi/session-map (kbd "r") #'mi/session-restore-last)
+(define-key mi/session-map (kbd "s") #'mi/session-save-custom)
+(define-key mi/session-map (kbd "l") #'mi/session-load-custom)
+(define-key mi/session-map (kbd "d") #'mi/session-delete-custom)
+(global-set-key (kbd "C-c S") mi/session-map)
+
+
 ;;;; * Agenda TODOs Org
 ;; Auto-create org directory and essential files if they don't exist
 (let ((org-dir (expand-file-name "~/org")))
@@ -256,8 +360,6 @@
   (setq-default skeletor-license nil)
   (skeletor-define-template "cpp-make-gtest-eglot" :title "C++ (Make + GTest + Eglot)")
   (skeletor-define-template "java-complete" :title "Java Complete Learning Stack (Selenium, DbUnit, JaCoCo)")
-
-
   )
 
 
@@ -265,9 +367,8 @@
 ;;;; ** Language Check Ortografia
 (use-package flyspell
   :ensure nil
-  :hook ((text-mode . flyspell-mode)
-         ;(prog-mode . flyspell-prog-mode)
-	 )
+  ;:hook (;(text-mode . flyspell-mode)
+         ;(prog-mode . flyspell-prog-mode))
   :config
   (setq ispell-program-name "hunspell")
   (setq ispell-dictionary "es_ES")
@@ -309,10 +410,13 @@
 (use-package consult
   :ensure t
   :bind (
-         ("C-s" . consult-line)     ;; Find in file
-         ("M-g i" . consult-imenu)  ;; Symbols code navigator
-         ("C-x b" . consult-buffer) ;; Buffer manager
-         ("M-s g" . consult-grep))) ;; Search text across the entire project
+         ("C-s"   . consult-line)       ;; Find in file
+         ("M-g i" . consult-imenu)      ;; Symbols code navigator
+         ("M-g g" . consult-goto-line)  ;; Goto line preview
+         ("M-g m" . consult-mark)       ;; Edited line history
+         ("C-x b" . consult-buffer)     ;; Buffer changer         
+         ("M-y"   . consult-yank-pop)   ;; Clipboard visuals
+         ("M-g e" . consult-flymake)))  ;; Show errors/warnings
 
 
 ;;;; ** Save cmd and search history
@@ -328,8 +432,14 @@
 
 ;;;; ** Window navigation
 (windmove-default-keybindings) ;; Enable using S-<arrow> to move between windows 
+(global-set-key (kbd "S-M-<left>")  'windmove-swap-states-left)
+(global-set-key (kbd "S-M-<right>") 'windmove-swap-states-right)
+(global-set-key (kbd "S-M-<up>")    'windmove-swap-states-up)
+(global-set-key (kbd "S-M-<down>")  'windmove-swap-states-down)
 
-(use-package golden-ratio ;; Automatic window resize 
+
+;;;; ** Automatic buffer resize
+(use-package golden-ratio
   :ensure t
   :init
   (golden-ratio-mode 1)
@@ -338,6 +448,7 @@
   (add-to-list 'golden-ratio-extra-commands 'windmove-right)
   (add-to-list 'golden-ratio-extra-commands 'windmove-up)
   (add-to-list 'golden-ratio-extra-commands 'windmove-down)
+  (add-to-list 'golden-ratio-extra-commands 'ace-window)
   (setq golden-ratio-exclude-modes '(ediff-mode "")))
 
 
@@ -363,6 +474,30 @@
   :ensure t)
 
 
+;;;; ** Expand region selection
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+
+
+;;;; ** Move lines easy duplicates 
+(use-package move-dup
+  :ensure t
+  :bind (("M-<up>"   . move-dup-move-lines-up)
+         ("M-<down>" . move-dup-move-lines-down)
+         ("C-M-y"   . move-dup-duplicate-up)))
+
+
+;;;; ** Jumping between buffers
+;; (no es compatible con golden-ratio del todo)
+(use-package ace-window
+  :ensure t
+  :bind ("M-o" . ace-window)
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-scope 'frame))
+
+
 ;;;; ** Documentation
 (use-package eldoc
   :init
@@ -378,7 +513,29 @@
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 ;; (global-set-key (kbd "C-c y") 'duplicate-line)
 (global-set-key (kbd "C-S-o") 'find-file-at-point)
-(global-set-key (kbd "C-S-d") 'duplicate-line)
+;; (global-set-key (kbd "C-S-d") 'duplicate-line)
+
+;;;; *** Auto renamer buffers
+(defun mi/rename-current-buffer-file ()
+  (interactive)
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not a file!" name)
+      (let ((new-name (read-file-name "Rename current buffer: " filename filename)))
+        (if (get-buffer new-name)
+            (error "Buffer '%s' already exists!" new-name)
+          (when (buffer-modified-p)
+            (save-buffer))
+          (rename-file filename new-name 1)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "Buffer '%s' renamed to '%s' succesfully" 
+                   (file-name-nondirectory filename) 
+                   (file-name-nondirectory new-name)))))))
+
+(global-set-key (kbd "C-c R") #'mi/rename-current-buffer-file)
+
 
 
 ;;;; ** Cheat sheet
@@ -424,7 +581,18 @@
   :ensure t
   :config
   (setq somafm-player-command "mpv"
-        somafm-player-parameters '("--no-video")))
+        somafm-player-parameters '("--no-video"))
+  (setq somafm-display-in-modeline 'f)
+
+  (if (fboundp 'somafm-mode-line-mode)
+      (somafm-mode-line-mode -1))
+
+  :bind(("C-c Y" . 'mi/somafm-map)
+        :map mi/somafm-map
+	("s" . somafm-by-completion)
+	("f" . somafm-add-current-song-to-favorites)
+	("c" . somafm-current-song)
+	("p" . somafm--stop)))
 
 
 ;;;; *** YouTube (Yeetube)
@@ -667,8 +835,16 @@
 
 ;;;; *** Maven multi-module & Project integration
 (with-eval-after-load 'project
-  (add-to-list 'project-vc-extra-root-markers "pom.xml")
-  (add-to-list 'project-vc-extra-root-markers ".project")
+  (remove-hook 'project-find-functions #'project-try-vc)
+
+  (defun mi-project-find-by-marker (dir)
+    (let ((root (or (locate-dominating-file dir ".project")
+                    ;; (locate-dominating-file dir "pom.xml")
+		    )))
+      (when root
+        (cons 'transient root))))
+
+  (add-hook 'project-find-functions #'mi-project-find-by-marker)
   (add-to-list 'vc-directory-exclusion-list "target")
   (add-to-list 'vc-directory-exclusion-list "build")
   (add-to-list 'vc-directory-exclusion-list ".bin"))
