@@ -161,7 +161,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(setq mi-font "Fira Code")
+(setq mi-font "JetBrains Mono NL")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -174,7 +174,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (find-font (font-spec :name mi-font))
-  (set-face-attribute 'default nil :font mi-font :height 100))
+  (set-face-attribute 'default nil :font mi-font :height 90))
 
 
 ;;;; *** Ligatures
