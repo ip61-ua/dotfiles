@@ -434,7 +434,7 @@
   :ensure t
   :bind (("M-<up>"   . move-dup-move-lines-up)
          ("M-<down>" . move-dup-move-lines-down)
-         ("C-M-y"   . move-dup-duplicate-up)))
+         ("C-M-y"    . move-dup-duplicate-up)))
 
 
 ;;;; ** Jumping between buffers
