@@ -44,14 +44,13 @@
  '(package-selected-packages
    '(ace-window add-node-modules-path auctex auto-dark consult corfu dape
 		dashboard docker doom-modeline doom-themes dotenv-mode
-		eglot-java emmet-mode exec-path-from-shell
+		doxymin eglot-java emmet-mode exec-path-from-shell
 		expand-region gitignore-templates golden-ratio
-		js2-mode json-mode kdl-mode ligature magit marginalia
-		markdown-mode move-dup multiple-cursors
-		nerd-icons-completion nerd-icons-corfu
-		nerd-icons-dired orderless org-modern pdf-tools
-		persp-mode plantuml-mode pug-mode pyvenv skeletor
-		smartparens somafm vertico vterm web-mode yaml-mode
+		json-mode ligature magit marginalia markdown-mode
+		move-dup multiple-cursors nerd-icons-completion
+		nerd-icons-corfu nerd-icons-dired orderless org-modern
+		pdf-tools persp-mode plantuml-mode pug-mode pyvenv
+		skeletor smartparens somafm vertico vterm yaml-mode
 		yasnippet-snippets yeetube))
  '(safe-local-variable-values
    '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
@@ -161,7 +160,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(setq mi-font "JetBrains Mono NL")
+(setq mi-font "Iosevka Nerd Font Mono")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -174,7 +173,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (find-font (font-spec :name mi-font))
-  (set-face-attribute 'default nil :font mi-font :height 90))
+  (set-face-attribute 'default nil :font mi-font :height 100))
 
 
 ;;;; *** Ligatures
@@ -833,7 +832,7 @@
 ;;;; * lsp eglotters
 ;;;; ** Languages
 (use-package eglot
-  :hook ((c-mode c++-mode python-mode dockerfile-mode yaml-mode LaTeX-mode typescript-ts-mode tsx-ts-mode rust-ts-mode) . eglot-ensure)
+  :hook ((c-mode c++-mode c-ts-mode c++-ts-mode python-mode dockerfile-mode yaml-mode LaTeX-mode typescript-ts-mode tsx-ts-mode rust-ts-mode) . eglot-ensure)
   :bind
   ("C-c r" . eglot-rename)
   ("C-c c" . eglot-code-actions)
@@ -841,7 +840,7 @@
 
   ;;;; *** C/C++
   (add-to-list 'eglot-server-programs
-	       '((c++-mode c-mode)
+	       '((c++-mode c-mode c-ts-mode c++-ts-mode)
 		 . ("clangd"
 		    "--background-index"
 		    "--clang-tidy"
