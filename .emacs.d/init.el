@@ -44,7 +44,7 @@
  '(package-selected-packages
    '(ace-window add-node-modules-path auctex auto-dark consult corfu dape
 		dashboard docker doom-modeline doom-themes dotenv-mode
-		doxymin eglot-java emmet-mode exec-path-from-shell
+		eglot-java emmet-mode exec-path-from-shell
 		expand-region gitignore-templates golden-ratio
 		json-mode ligature magit marginalia markdown-mode
 		move-dup multiple-cursors nerd-icons-completion
@@ -453,16 +453,6 @@
   :config
   (setq eldoc-echo-area-use-multiline-p nil) 
   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
-
-
-;;;; *** C++ Documentation (Doxymin)
-(use-package doxymin
-  :ensure t
-  :config
-  (defun mi-doxymin-atajo ()
-    (local-set-key (kbd "C-c C-d") 'doxymin-insert-function-comment))
-  
-  (add-hook 'c-mode-common-hook #'mi-doxymin-atajo))
 
 
 ;;;; ** Convient shortcuts
