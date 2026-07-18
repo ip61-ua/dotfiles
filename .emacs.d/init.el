@@ -455,6 +455,16 @@
   (setq eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
 
 
+;;;; *** C++ Documentation (Doxymin)
+(use-package doxymin
+  :ensure t
+  :config
+  (defun mi-doxymin-atajo ()
+    (local-set-key (kbd "C-c C-d") 'doxymin-insert-function-comment))
+  
+  (add-hook 'c-mode-common-hook #'mi-doxymin-atajo))
+
+
 ;;;; ** Convient shortcuts
 (global-set-key (kbd "C-c s") 'shell)
 (global-set-key (kbd "<f5>") 'recompile)
@@ -462,6 +472,7 @@
 ;; (global-set-key (kbd "C-c y") 'duplicate-line)
 (global-set-key (kbd "C-S-o") 'find-file-at-point)
 ;; (global-set-key (kbd "C-S-d") 'duplicate-line)
+
 
 ;;;; *** Auto renamer buffers
 (defun mi/rename-current-buffer-file ()
