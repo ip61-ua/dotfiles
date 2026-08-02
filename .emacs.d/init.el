@@ -41,17 +41,7 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages
-   '(ace-window add-node-modules-path auctex auto-dark consult corfu dape
-		dashboard docker doom-modeline doom-themes dotenv-mode
-		eglot-java emmet-mode exec-path-from-shell
-		expand-region gitignore-templates golden-ratio
-		json-mode ligature magit marginalia markdown-mode
-		move-dup multiple-cursors nerd-icons-completion
-		nerd-icons-corfu nerd-icons-dired orderless org-modern
-		pdf-tools persp-mode plantuml-mode pug-mode pyvenv
-		skeletor smartparens somafm vertico vterm yaml-mode
-		yasnippet-snippets yeetube))
+ '(package-selected-packages nil)
  '(safe-local-variable-values
    '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
      (eval shell-command "plantuml -tsvg *.puml")
@@ -546,6 +536,12 @@
   (yeetube-mpv-send-keypress "L")
   (message "yeetube: toggle loop"))
 
+(defun mi-yeetube-quit-video ()
+  "Quits mpv."
+  (interactive)
+  (yeetube-mpv-send-keypress "q")
+  (message "yeetube: quit"))
+
 (use-package yeetube
   :ensure t
   :init (define-prefix-command 'mi/yeetube-map)
@@ -556,7 +552,8 @@
           ("d" . 'yeetube-download-videos)
           ("p" . 'yeetube-mpv-toggle-pause)
           ("v" . 'yeetube-mpv-toggle-video)
-          ("V" . 'yeetube-mode-map--toggle-yeetube-mpv-no-video)
+          ;; ("V" . 'yeetube-mpv-no-video) ;; don't do that, prees `o n' once!
+          ("q" . 'mi-yeetube-quit-video)
           ("k" . 'yeetube-remove-saved-video)
           ("r" . 'yeetube-replay)
 	  ("L" . 'mi-yeetube-loop-infinite-video)))
