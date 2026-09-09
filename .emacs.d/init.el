@@ -41,7 +41,17 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(ace-window add-node-modules-path auctex auto-dark consult corfu dape
+		dashboard docker doom-modeline doom-themes dotenv-mode
+		eglot-java emmet-mode exec-path-from-shell
+		expand-region gitignore-templates golden-ratio
+		json-mode ligature magit marginalia markdown-mode
+		move-dup multiple-cursors nerd-icons-completion
+		nerd-icons-corfu nerd-icons-dired orderless org-modern
+		pdf-tools persp-mode plantuml-mode pug-mode pyvenv
+		skeletor smartparens somafm vertico vterm yaml-mode
+		yasnippet-snippets yeetube))
  '(safe-local-variable-values
    '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
      (eval shell-command "plantuml -tsvg *.puml")
@@ -451,7 +461,24 @@
 (global-set-key (kbd "C-c SPC") 'completion-at-point)
 ;; (global-set-key (kbd "C-c y") 'duplicate-line)
 (global-set-key (kbd "C-S-o") 'find-file-at-point)
-;; (global-set-key (kbd "C-S-d") 'duplicate-line)
+;; (global-set-key (kbd "C-S-d") 'duplicate-line
+
+
+;;;; *** Copy cursor position like file:line:column
+(defun mi/copy-cursor-rel-position ()
+  (interactive)
+  (if-let ((file-name (buffer-file-name)))
+      (let* ((proj (project-current))
+             (root (if proj (project-root proj) default-directory))
+             (rel-file (file-relative-name file-name root))
+             (line (line-number-at-pos))
+             (col (1+ (current-column)))
+             (result (format "%s:%d:%d" rel-file line col)))
+        (kill-new result)
+        (message "%s" result))
+    (message "Buffer is not associated with a file")))
+
+(global-set-key (kbd "C-c P") 'mi/copy-cursor-rel-position)
 
 
 ;;;; *** Auto renamer buffers
@@ -474,7 +501,6 @@
                    (file-name-nondirectory new-name)))))))
 
 (global-set-key (kbd "C-c R") #'mi/rename-current-buffer-file)
-
 
 
 ;;;; ** Cheat sheet
