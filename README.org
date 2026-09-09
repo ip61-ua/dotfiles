@@ -1,5 +1,0 @@
-* dotfiles
-
-#+begin_src bash
-  dnf install emacs niri kitty fuzzel swaybg wlsunset
-#+end_src

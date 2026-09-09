@@ -1,22 +1,62 @@
-*
-!.gitignore
-!README.org
-!fix_bluetooth.sh
+# Created by https://www.toptal.com/developers/gitignore/api/emacs
+# Edit at https://www.toptal.com/developers/gitignore?templates=emacs
 
-!.emacs.d/
-.emacs.d/*
-!.emacs.d/init.el
-!.emacs.d/snippets/java-mode/*
-!.emacs.d/snippets/
-!.emacs.d/snippets/**
+### Emacs ###
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
 
-!.emacs.d/skeletons/
-!.emacs.d/skeletons/**
+# Org-mode
+.org-id-locations
+*_archive
 
-!.config/
-.config/*
-!.config/niri/
-!.config/niri/**
+# flymake-mode
+*_flymake.*
 
-!.config/waybar/
-!.config/waybar/**
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+/elpa/
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+.emacs.d/cache/
+.emacs.d/eln-cache/
+.emacs.d/elpa/
+.emacs.d/history
+.emacs.d/recentf
+.emacs.d/request/
+.emacs.d/transient/
+
+# cask packages
+.cask/
+dist/
+
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# directory configuration
+.dir-locals.el
+
+# network security
+/network-security.data
+
+
+# End of https://www.toptal.com/developers/gitignore/api/emacs
