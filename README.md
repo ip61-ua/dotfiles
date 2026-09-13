@@ -32,4 +32,6 @@ sudo firewall-cmd --zone=nm-shared --add-port=3000/tcp
 # Listar puertos abiertos
 sudo firewall-cmd --zone=nm-shared --list-ports
 
+# Mitigar problemas de Offloading
+sudo ethtool -K wlp4s0 tso off gso off gro off
 ```
