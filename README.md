@@ -15,3 +15,21 @@ git config --global user.email EMAIL@SAMPLE.COM
 sudo usermod -a -G dialout $USER
 
 ```
+
+``` shell
+# Crear Hotspot Wi-Fi con SSID "A", Contraseña "12345678", Banda de 2,4 GHz
+nmcli device wifi hotspot ifname wlp4s0 con-name A ssid A band bg password 12345678
+
+# Ver zonas de Interfaz
+sudo firewall-cmd --get-zone-of-interface=wlp4s0
+
+# Espiar consola
+sudo tcpdump -i wlp4s0 host 10.42.0.3
+
+# Abrir puerto 
+sudo firewall-cmd --zone=nm-shared --add-port=3000/tcp
+
+# Listar puertos abiertos
+sudo firewall-cmd --zone=nm-shared --list-ports
+
+```
