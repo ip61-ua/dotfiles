@@ -41,7 +41,18 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(ace-window ada-mode add-node-modules-path auctex auto-dark consult
+		corfu dape dashboard docker doom-modeline doom-themes
+		dotenv-mode eglot-java emmet-mode exec-path-from-shell
+		expand-region gitignore-templates golden-ratio
+		json-mode ligature lsp-ada lsp-mode magit marginalia
+		markdown-mode move-dup multiple-cursors
+		nerd-icons-completion nerd-icons-corfu
+		nerd-icons-dired orderless org-modern pdf-tools
+		persp-mode plantuml-mode pug-mode pyvenv skeletor
+		smartparens somafm vertico vterm yaml-mode
+		yasnippet-snippets yeetube))
  '(safe-local-variable-values
    '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
      (eval shell-command "plantuml -tsvg *.puml")
