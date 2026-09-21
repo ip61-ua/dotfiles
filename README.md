@@ -16,6 +16,9 @@ sudo usermod -a -G dialout $USER
 
 export GPR_PROJECT_PATH=/usr/share/gpr:/usr/lib64/gnat:/usr/lib/gnat
 
+echo 'export GDK_BACKEND=x11' >> ~/.bashrc
+
+source ~/.bashrc
 ```
 
 ``` shell
