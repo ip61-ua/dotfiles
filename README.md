@@ -14,7 +14,7 @@ git config --global user.email EMAIL@SAMPLE.COM
 	
 sudo usermod -a -G dialout $USER
 
-export GPR_PROJECT_PATH=/usr/share/gpr:$GPR_PROJECT_PATH
+export GPR_PROJECT_PATH=/usr/share/gpr:/usr/lib64/gnat:/usr/lib/gnat
 
 ```
 
