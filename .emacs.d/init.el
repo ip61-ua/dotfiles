@@ -161,7 +161,7 @@
 
 ;;;; ** Fonts
 ;;;; *** Font and size
-(setq mi-font "Iosevka Nerd Font Mono")
+(setq mi-font "Iosevka Nerd Font")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -376,7 +376,7 @@
 
 
 ;;;; ** General spacing
-(setq-default c-basic-offset 4)
+(setq-default c-basic-offset 2)
 
 
 ;;;; ** Window navigation
@@ -856,7 +856,7 @@
 		    "--header-insertion=iwyu"
 		    "--completion-style=detailed"
 		    "--function-arg-placeholders=0"
-		    "--fallback-style=GNU")))
+		    "--fallback-style=LLVM")))
 
   
   ;;;; *** Python 
