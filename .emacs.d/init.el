@@ -41,10 +41,10 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages
-   '())
+ '(package-selected-packages nil)
  '(safe-local-variable-values
-   '((eval shell-command "plantuml -tpng *.puml") (tex-master . t)
+   '((eval progn (pp-buffer) (indent-buffer))
+     (eval shell-command "plantuml -tpng *.puml") (tex-master . t)
      (eval shell-command "plantuml -tsvg *.puml")
      (eval add-hook 'TeX-before-compilation-hook
 	   (lambda nil (shell-command "plantuml -tsvg *.puml")) nil t)))
@@ -791,14 +791,15 @@
 (add-hook 'java-ts-mode-hook 'mi-format-java-simple)
 
 
-;;;; *** Maven multi-module & Project integration
+;;;; * Maven multi-module & Project integration
 (with-eval-after-load 'project
   (remove-hook 'project-find-functions #'project-try-vc)
 
   (defun mi-project-find-by-marker (dir)
     (let ((root (or (locate-dominating-file dir ".project")
                     ;; (locate-dominating-file dir "pom.xml")
-		    )))
+		    (locate-dominating-file dir (lambda (d)
+                                                  (directory-files d nil "\\.gpr\\'" t))))))
       (when root
         (cons 'transient root))))
 
@@ -831,8 +832,7 @@
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
 
 
-;;;; ** Templates
-;;;; *** Pug.js
+;;;; ** Pug.js
 (use-package pug-mode
   :ensure t
   :mode "\\.pug\\'")
@@ -842,6 +842,34 @@
 (use-package add-node-modules-path
   :ensure t
   :hook ((js-mode js-ts-mode typescript-ts-mode tsx-ts-mode) . add-node-modules-path))
+
+
+;;;; ** Ada
+(use-package ada-mode
+  :ensure t
+  :mode ("\\.ad[sb]\\'" . ada-mode)
+  :mode ("\\.gpr\\'" . ada-mode)
+  :hook (ada-mode . eglot-ensure)
+  :bind (:map ada-mode-map
+              ("C-c C-c" . nil))
+  :init
+  (setq ada-xref-backend 'eglot)  
+  :config
+  (with-eval-after-load 'wisi
+    (remove-hook 'project-find-functions #'wisi-prj-find-dominating-cached)
+    (remove-hook 'project-find-functions #'wisi-prj-find-dominating-cached)
+    (setq wisi-auto-parse-frame nil))
+  (with-eval-after-load 'project
+    (remove-hook 'project-find-functions #'wisi-prj-find-dominating-cached))
+
+  (add-hook 'ada-mode-hook
+            (lambda ()
+	      (setq-local indent-tabs-mode nil)
+	      (setq-local indent-line-function 'indent-relative)
+	      (setq-local ada-indent 3)
+              (setq-local tab-width 3)
+	      (setq-local compile-command "gprbuild -p")
+	      )))
 
 
 ;;;; * lsp eglotters
@@ -870,6 +898,11 @@
                '((python-mode) . ("pyright-langserver" "--stdio")))
 
   
+  ;;;; *** Ada
+  (add-to-list 'eglot-server-programs
+               '((ada-mode) . ("ada_language_server")))
+
+  
   ;;;; *** Tex 
   ;;(add-to-list 'eglot-server-programs
   ;;             '((latex-mode LaTeX-mode tex-mode) . ("texlab")))
@@ -879,7 +912,14 @@
   (add-hook 'before-save-hook
 	    (lambda ()
 	      (when (and (eglot-managed-p) 
-			 (derived-mode-p 'c++-mode 'c-mode 'python-mode 'rust-ts-mode 'java-mode 'java-ts-mode))
+			 (derived-mode-p
+			  'c++-mode
+			  'c-mode
+			  'python-mode
+			  'rust-ts-mode
+			  'java-mode
+			  'java-ts-mode
+			  'ada-mode))
 		(eglot-format-buffer)))))
 
 
