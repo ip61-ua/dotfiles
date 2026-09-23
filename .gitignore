@@ -7,6 +7,14 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs
 
 ### Emacs ###
+.emacs.d/.mc-lists.el
+.emacs.d/.project
+.emacs.d/.somafm-favorites
+.emacs.d/games/
+.emacs.d/init.sh
+.emacs.d/projects
+.emacs.d/yeetube
+
 # -*- mode: gitignore; -*-
 *~
 \#*\#
