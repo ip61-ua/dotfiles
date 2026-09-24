@@ -868,7 +868,7 @@
 	      (setq-local indent-line-function 'indent-relative)
 	      (setq-local ada-indent 3)
               (setq-local tab-width 3)
-	      (setq-local compile-command "gprbuild -p")
+	      (setq-local compile-command "gprbuild -p -g -cargs -g -O0")
 	      )))
 
 
