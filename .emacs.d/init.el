@@ -238,26 +238,28 @@
 
 
 ;;;; * Session Management (Workspaces)
-(use-package persp-mode
-  :ensure t
-  :init
-  (setq persp-keymap-prefix (kbd "C-c S")) 
-  :config
-  (setq persp-save-dir (expand-file-name "workspaces/" mi-temporal-cache-dir)
-        persp-auto-save-fname "autosave"
-        persp-auto-save-opt 1          ;; Do not ask for saving latest
-        persp-nil-name "Dashboard"     ;; Initial session
-        persp-set-placement-from-window-asignment t)
-
-  (unless (file-exists-p persp-save-dir)
-    (make-directory persp-save-dir t))
-
-  (persp-mode 1)
-
-  (with-eval-after-load 'consult
-    (with-eval-after-load 'persp-mode
-      (setq persp-add-buffer-on-after-change-major-mode t)
-      (add-to-list 'consult-buffer-filter "\\`\\*persp-"))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (use-package persp-mode							 ;;
+;;   :ensure t									 ;;
+;;   :init									 ;;
+;;   (setq persp-keymap-prefix (kbd "C-c S")) 					 ;;
+;;   :config									 ;;
+;;   (setq persp-save-dir (expand-file-name "workspaces/" mi-temporal-cache-dir) ;;
+;;         persp-auto-save-fname "autosave"					 ;;
+;;         persp-auto-save-opt 1          ;; Do not ask for saving latest	 ;;
+;;         persp-nil-name "Dashboard"     ;; Initial session			 ;;
+;;         persp-set-placement-from-window-asignment t)				 ;;
+;; 										 ;;
+;;   (unless (file-exists-p persp-save-dir)					 ;;
+;;     (make-directory persp-save-dir t))					 ;;
+;; 										 ;;
+;;   (persp-mode 1)								 ;;
+;; 										 ;;
+;;   (with-eval-after-load 'consult						 ;;
+;;     (with-eval-after-load 'persp-mode					 ;;
+;;       (setq persp-add-buffer-on-after-change-major-mode t)			 ;;
+;;       (add-to-list 'consult-buffer-filter "\\`\\*persp-"))))			 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;; * Agenda TODOs Org
@@ -868,7 +870,7 @@
 	      (setq-local indent-line-function 'indent-relative)
 	      (setq-local ada-indent 3)
               (setq-local tab-width 3)
-	      (setq-local compile-command "gprbuild -p -g -cargs -g -O0")
+	      (setq-local compile-command "gprclean && gprbuild -p -f -g -cargs -g -O0")
 	      )))
 
 

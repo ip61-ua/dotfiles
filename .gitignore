@@ -2,6 +2,7 @@
 .emacs.d/.lsp-session-v1
 .emacs.d/.mc-lists.el
 .emacs.d/projects
+.emacs.d/url/
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs
