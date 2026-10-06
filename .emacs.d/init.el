@@ -586,17 +586,38 @@
 ;;;; ** Dape (Debugger adapter)
 (use-package dape
   :ensure t
-  :bind (("C-x C-a b" . dape-breakpoint-toggle) ; [B]reakpoint
-         ("C-x C-a r" . dape-continue)          ; [R]un / Continue
-         ("C-x C-a n" . dape-next)              ; [N]ext (Step over)
-         ("C-x C-a s" . dape-step-in)           ; [S]tep into
-         ("C-x C-a f" . dape-step-out)          ; [F]inish (Step out)
-         ("C-x C-a q" . dape-quit))             ; [Q]uit
+  :bind (("M-p d" . dape)
+         ("M-p q" . dape-quit)
+         ("M-p r" . dape-restart)
+         ("M-p b" . dape-breakpoint-toggle)
+         ("M-p c" . dape-continue)
+         ("M-p n" . dape-next)
+         ("M-p s" . dape-step-in)
+         ("M-p o" . dape-step-out)
+         ("M-p e" . dape-evaluate-expression)
+         ("<f7>"  . dape-step-in)
+         ("<f8>"  . dape-continue)
+         ("<f9>"  . dape-next))
+  
   :config
-  (setq dape-inlay-hints t)
+  (setq dape-inlay-hints t
+        dape-inline-variables t
+        dape-buffer-window-arrangement 'left)
+  
   (add-hook 'dape-on-start-hooks 'dape-info)
-  (add-hook 'dape-on-stopped-hooks 'dape-info-buffer-cleanup))
+  (add-hook 'dape-on-quit-hooks 'dape-info-buffer-cleanup)
 
+  (add-to-list 'dape-configs
+               `(gdb-interactive
+                 modes (c-mode c++-mode)
+                 command "gdb"
+                 command-args ("-i=dap")
+                 :request "launch"
+                 :type "executable"
+                 :gdb-args ("-i=dap")
+                 :program (lambda ()
+                            (read-file-name "Debug executable: "
+                                            default-directory)))))
 
 ;;;; * Custom time macros
 (defun mi-time-ins-now ()
