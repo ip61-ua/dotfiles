@@ -1,3 +1,5 @@
+.emacs.d/eglot-java-eclipse-jdt-cache/
+.emacs.d/share/
 .emacs.d/.cache/
 .emacs.d/.lsp-session-v1
 .emacs.d/.mc-lists.el
