@@ -41,7 +41,18 @@
      ("courier" "CMU Typewriter Text" "fixed")
      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
      ("helv" "helvetica" "Inter" "arial" "fixed")))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(ace-window ada-mode add-node-modules-path auctex auto-dark consult
+		corfu dape dashboard docker doom-modeline doom-themes
+		dotenv-mode eglot-java emmet-mode exec-path-from-shell
+		expand-region gitignore-templates golden-ratio ht
+		json-mode ligature lv magit marginalia markdown-mode
+		move-dup multiple-cursors nerd-icons-completion
+		nerd-icons-corfu nerd-icons-dired nyan-mode orderless
+		org-modern pdf-tools persp-mode plantuml-mode pug-mode
+		pyvenv skeletor smartparens somafm spinner treemacs
+		treemacs-nerd-icons vertico vterm window-divider yaml
+		yaml-mode yasnippet-snippets yeetube zoom-window))
  '(safe-local-variable-values
    '((eval setenv "openout_any" "a")
      (eval setenv "PLANTUML_JAR" "/usr/share/java/plantuml.jar")
@@ -54,6 +65,10 @@
 	   (lambda nil (shell-command "plantuml -tsvg *.puml")) nil t)))
  '(smtpmail-smtp-server "aitana.cpd.ua.es")
  '(smtpmail-smtp-service 25))
+
+
+;;;; * Regional
+(setq mi-region "es_ES.UTF-8")
 
 
 ;;;; * Wayland inherit enviromental variables from real terminal thing
@@ -108,17 +123,8 @@
   (doom-modeline-major-mode-icon t)
   (doom-modeline-major-mode-color-icon t)
   (doom-modeline-buffer-state-icon t)
-  (doom-modeline-buffer-modification-icon t))
-
-
-;;;; ** Scrollbar Nyancat
-;; (use-package nyan-mode
-;;   :ensure t
-;;   :config
-;;   (nyan-mode 1)
-;; 					; (setq nyan-animate-nyancat f)
-;; 					; (setq nyan-wavy-trail t)
-;;   )
+  (doom-modeline-buffer-modification-icon t)
+  (doom-modeline-time nil))
 
 
 ;;;; ** Startup screen
@@ -156,7 +162,7 @@
 ;;;; ** Fonts
 ;;;; *** Font and size
 (setq mi-font "Iosevka Nerd Font")
-;(setq mi-font "JetBrains Mono")
+(setq mi-font-sans "Adwaita Sans")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adwaita Mono         ;; GNOME / Inter	   ;;
@@ -169,7 +175,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (when (find-font (font-spec :name mi-font))
-  (set-face-attribute 'default nil :font mi-font :height 110))
+  (set-face-attribute 'default nil :font mi-font :height 110)
+  (set-face-attribute 'fixed-pitch nil :font mi-font :height 110))
+
+(when (find-font (font-spec :name mi-font-sans))
+  (set-face-attribute 'variable-pitch nil :family mi-font-sans :height 100))
 
 ;;;; *** Ligatures
 (use-package ligature
@@ -455,11 +465,24 @@
 (global-set-key (kbd "S-M-<down>")  'windmove-swap-states-down)
 
 
-;;;; ** Automatic buffer resize
+;;;; ** Buffer layout
+(use-package winner
+  :ensure nil
+  :init (winner-mode 1)
+  :bind (("C-c <left>"  . winner-undo)   
+         ("C-c <right>" . winner-redo))) 
+
+(use-package zoom-window
+  :ensure t
+  :bind ("C-x 1" . zoom-window-zoom)
+  :config
+  (setq zoom-window-mode-line-color "#2d4f6c") 
+  (setq zoom-window-use-ido nil))
+
+(global-set-key (kbd "C-x c") 'balance-windows)
+
 (use-package golden-ratio
   :ensure t
-  :init
-  (golden-ratio-mode 1)
   :config
   (add-to-list 'golden-ratio-extra-commands 'windmove-left)
   (add-to-list 'golden-ratio-extra-commands 'windmove-right)
@@ -467,6 +490,64 @@
   (add-to-list 'golden-ratio-extra-commands 'windmove-down)
   (add-to-list 'golden-ratio-extra-commands 'ace-window)
   (setq golden-ratio-exclude-modes '(ediff-mode "")))
+
+
+;;;; *** Window Buffer Border Dividers
+(setq window-divider-default-places 't
+      window-divider-default-bottom-width 1
+      window-divider-default-right-width 1)
+(window-divider-mode 1)
+
+
+;;;; ** Clock modelines
+(setq display-time-default-load-average nil)
+(setq display-time-string-forms '(""))
+(display-time-mode 1)
+
+
+;;;; ** Treeview sidebar
+(use-package treemacs
+  :ensure t
+  :defer t
+  :bind
+  (("C-c t t"     . treemacs)
+   ("C-c t f"     . treemacs-find-file)
+   ("C-c t B"     . treemacs-bookmark)
+   ("C-c t s"     . treemacs-select-window))
+  :hook
+  (treemacs-mode . (lambda ()
+                     (display-line-numbers-mode -1)))
+  :config
+  (setq treemacs-width                         30
+        treemacs-indentation                   2
+        treemacs-is-never-other-window         nil
+        treemacs-silent-filewatch              t
+        treemacs-silent-refresh                t
+        treemacs-show-hidden-files             t
+        treemacs-sorting                       'alphabetic-case-insensitive-asc
+        treemacs-follow-after-init             t
+        treemacs-persist-file                  (expand-file-name "treemacs-persist" mi-temporal-cache-dir)
+        treemacs-litter-directories            '("/node_modules" "/.venv" "/.cache" "/target" "/build" "/.bin" )
+        treemacs-user-mode-line-format         '("  " (:eval (propertize (let ((system-time-locale mi-region))
+									   (format-time-string "%a, %d %b %H:%M")) 
+									 'face 'mode-line-buffer-id))))
+  (treemacs-follow-mode t)
+  (treemacs-project-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode 'always)
+  (treemacs-hide-gitignored-files-mode t)
+  (pcase (cons (not (null (executable-find "git")))
+               (not (null (executable-find "python3"))))
+    (`(t . t)
+     (treemacs-git-mode 'deferred))
+    (`(t . _)
+     (treemacs-git-mode 'simple))))
+
+(use-package treemacs-nerd-icons
+  :ensure t
+  :after (treemacs nerd-icons)
+  :config
+  (treemacs-load-theme "nerd-icons"))
 
 
 ;;;; ** Multicursors 
