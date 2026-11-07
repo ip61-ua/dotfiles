@@ -493,10 +493,10 @@
 
 
 ;;;; *** Window Buffer Border Dividers
-(setq window-divider-default-places 't
-      window-divider-default-bottom-width 1
-      window-divider-default-right-width 1)
-(window-divider-mode 1)
+;(setq window-divider-default-places 't
+;      window-divider-default-bottom-width 1
+;      window-divider-default-right-width 1)
+;(window-divider-mode 0)
 
 
 ;;;; ** Clock modelines
